@@ -1,0 +1,195 @@
+
+-- USE DESCRIBE to show tables' schema
+
+DESCRIBE bike_data; 
+┌─────────────────────────┬─────────────┬─────────┬─────────┬─────────┬───────┐
+│       column_name       │ column_type │  null   │   key   │ default │ extra │
+│         varchar         │   varchar   │ varchar │ varchar │ varchar │ int32 │
+├─────────────────────────┼─────────────┼─────────┼─────────┼─────────┼───────┤
+│ tripduration            │ BIGINT      │ YES     │         │         │       │
+│ starttime               │ TIMESTAMP   │ YES     │         │         │       │
+│ stoptime                │ TIMESTAMP   │ YES     │         │         │       │
+│ start station id        │ BIGINT      │ YES     │         │         │       │
+│ start station name      │ VARCHAR     │ YES     │         │         │       │
+│ start station latitude  │ DOUBLE      │ YES     │         │         │       │
+│ start station longitude │ DOUBLE      │ YES     │         │         │       │
+│ end station id          │ BIGINT      │ YES     │         │         │       │
+│ end station name        │ VARCHAR     │ YES     │         │         │       │
+│ end station latitude    │ DOUBLE      │ YES     │         │         │       │
+│ end station longitude   │ DOUBLE      │ YES     │         │         │       │
+│ bikeid                  │ BIGINT      │ YES     │         │         │       │
+│ usertype                │ VARCHAR     │ YES     │         │         │       │
+│ birth year              │ BIGINT      │ YES     │         │         │       │
+│ gender                  │ BIGINT      │ YES     │         │         │       │
+│ ride_id                 │ VARCHAR     │ YES     │         │         │       │
+│ rideable_type           │ VARCHAR     │ YES     │         │         │       │
+│ started_at              │ TIMESTAMP   │ YES     │         │         │       │
+│ ended_at                │ TIMESTAMP   │ YES     │         │         │       │
+│ start_station_name      │ VARCHAR     │ YES     │         │         │       │
+│ start_station_id        │ VARCHAR     │ YES     │         │         │       │
+│ end_station_name        │ VARCHAR     │ YES     │         │         │       │
+│ end_station_id          │ VARCHAR     │ YES     │         │         │       │
+│ start_lat               │ DOUBLE      │ YES     │         │         │       │
+│ start_lng               │ DOUBLE      │ YES     │         │         │       │
+│ end_lat                 │ DOUBLE      │ YES     │         │         │       │
+│ end_lng                 │ DOUBLE      │ YES     │         │         │       │
+│ member_casual           │ VARCHAR     │ YES     │         │         │       │
+├─────────────────────────┴─────────────┴─────────┴─────────┴─────────┴───────┤
+│ 28 rows                                                           6 columns │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+DESCRIBE central_park_weather; 
+┌─────────────┬─────────────┬─────────┬─────────┬─────────┬───────┐
+│ column_name │ column_type │  null   │   key   │ default │ extra │
+│   varchar   │   varchar   │ varchar │ varchar │ varchar │ int32 │
+├─────────────┼─────────────┼─────────┼─────────┼─────────┼───────┤
+│ STATION     │ VARCHAR     │ YES     │         │         │       │
+│ NAME        │ VARCHAR     │ YES     │         │         │       │
+│ DATE        │ DATE        │ YES     │         │         │       │
+│ AWND        │ DOUBLE      │ YES     │         │         │       │
+│ PRCP        │ DOUBLE      │ YES     │         │         │       │
+│ SNOW        │ DOUBLE      │ YES     │         │         │       │
+│ SNWD        │ DOUBLE      │ YES     │         │         │       │
+│ TMAX        │ BIGINT      │ YES     │         │         │       │
+│ TMIN        │ BIGINT      │ YES     │         │         │       │
+└─────────────┴─────────────┴─────────┴─────────┴─────────┴───────┘
+
+DESCRIBE daily_citi_bike_trip_counts_and_weather; 
+┌─────────────────────┬─────────────┬─────────┬─────────┬─────────┬───────┐
+│     column_name     │ column_type │  null   │   key   │ default │ extra │
+│       varchar       │   varchar   │ varchar │ varchar │ varchar │ int32 │
+├─────────────────────┼─────────────┼─────────┼─────────┼─────────┼───────┤
+│ date                │ DATE        │ YES     │         │         │       │
+│ trips               │ BIGINT      │ YES     │         │         │       │
+│ precipitation       │ DOUBLE      │ YES     │         │         │       │
+│ snowfall            │ DOUBLE      │ YES     │         │         │       │
+│ max_temperature     │ DOUBLE      │ YES     │         │         │       │
+│ min_temperature     │ DOUBLE      │ YES     │         │         │       │
+│ average_wind_speed  │ VARCHAR     │ YES     │         │         │       │
+│ dow                 │ BIGINT      │ YES     │         │         │       │
+│ year                │ BIGINT      │ YES     │         │         │       │
+│ month               │ BIGINT      │ YES     │         │         │       │
+│ holiday             │ BOOLEAN     │ YES     │         │         │       │
+│ stations_in_service │ VARCHAR     │ YES     │         │         │       │
+│ weekday             │ BOOLEAN     │ YES     │         │         │       │
+│ weekday_non_holiday │ BOOLEAN     │ YES     │         │         │       │
+│ snow_depth          │ DOUBLE      │ YES     │         │         │       │
+├─────────────────────┴─────────────┴─────────┴─────────┴─────────┴───────┤
+│ 15 rows                                                       6 columns │
+└─────────────────────────────────────────────────────────────────────────┘
+
+DESCRIBE fhv_bases; 
+┌─────────────┬─────────────┬─────────┬─────────┬─────────┬───────┐
+│ column_name │ column_type │  null   │   key   │ default │ extra │
+│   varchar   │   varchar   │ varchar │ varchar │ varchar │ int32 │
+├─────────────┼─────────────┼─────────┼─────────┼─────────┼───────┤
+│ column0     │ VARCHAR     │ YES     │         │         │       │
+│ column1     │ VARCHAR     │ YES     │         │         │       │
+│ column2     │ VARCHAR     │ YES     │         │         │       │
+│ column3     │ VARCHAR     │ YES     │         │         │       │
+└─────────────┴─────────────┴─────────┴─────────┴─────────┴───────┘
+
+DESCRIBE fhv_tripdata; 
+┌────────────────────────┬─────────────┬─────────┬─────────┬─────────┬───────┐
+│      column_name       │ column_type │  null   │   key   │ default │ extra │
+│        varchar         │   varchar   │ varchar │ varchar │ varchar │ int32 │
+├────────────────────────┼─────────────┼─────────┼─────────┼─────────┼───────┤
+│ dispatching_base_num   │ VARCHAR     │ YES     │         │         │       │
+│ pickup_datetime        │ TIMESTAMP   │ YES     │         │         │       │
+│ dropOff_datetime       │ TIMESTAMP   │ YES     │         │         │       │
+│ PUlocationID           │ DOUBLE      │ YES     │         │         │       │
+│ DOlocationID           │ DOUBLE      │ YES     │         │         │       │
+│ SR_Flag                │ INTEGER     │ YES     │         │         │       │
+│ Affiliated_base_number │ VARCHAR     │ YES     │         │         │       │
+└────────────────────────┴─────────────┴─────────┴─────────┴─────────┴───────┘
+
+DESCRIBE fhvhv_tripdata; 
+┌──────────────────────┬─────────────┬─────────┬─────────┬─────────┬───────┐
+│     column_name      │ column_type │  null   │   key   │ default │ extra │
+│       varchar        │   varchar   │ varchar │ varchar │ varchar │ int32 │
+├──────────────────────┼─────────────┼─────────┼─────────┼─────────┼───────┤
+│ hvfhs_license_num    │ VARCHAR     │ YES     │         │         │       │
+│ dispatching_base_num │ VARCHAR     │ YES     │         │         │       │
+│ originating_base_num │ VARCHAR     │ YES     │         │         │       │
+│ request_datetime     │ TIMESTAMP   │ YES     │         │         │       │
+│ on_scene_datetime    │ TIMESTAMP   │ YES     │         │         │       │
+│ pickup_datetime      │ TIMESTAMP   │ YES     │         │         │       │
+│ dropoff_datetime     │ TIMESTAMP   │ YES     │         │         │       │
+│ PULocationID         │ BIGINT      │ YES     │         │         │       │
+│ trip_miles           │ DOUBLE      │ YES     │         │         │       │
+│ trip_time            │ BIGINT      │ YES     │         │         │       │
+│ base_passenger_fare  │ DOUBLE      │ YES     │         │         │       │
+│ tolls                │ DOUBLE      │ YES     │         │         │       │
+│ bcf                  │ DOUBLE      │ YES     │         │         │       │
+│ sales_tax            │ DOUBLE      │ YES     │         │         │       │
+│ congestion_surcharge │ DOUBLE      │ YES     │         │         │       │
+│ airport_fee          │ DOUBLE      │ YES     │         │         │       │
+│ tips                 │ DOUBLE      │ YES     │         │         │       │
+│ driver_pay           │ DOUBLE      │ YES     │         │         │       │
+│ shared_request_flag  │ VARCHAR     │ YES     │         │         │       │
+│ shared_match_flag    │ VARCHAR     │ YES     │         │         │       │
+│ access_a_ride_flag   │ VARCHAR     │ YES     │         │         │       │
+│ wav_request_flag     │ VARCHAR     │ YES     │         │         │       │
+│ wav_match_flag       │ VARCHAR     │ YES     │         │         │       │
+│ DOLocationID         │ BIGINT      │ YES     │         │         │       │
+├──────────────────────┴─────────────┴─────────┴─────────┴─────────┴───────┤
+│ 24 rows                                                        6 columns │
+└──────────────────────────────────────────────────────────────────────────┘
+
+DESCRIBE green_tripdata; 
+┌───────────────────────┬─────────────┬─────────┬─────────┬─────────┬───────┐
+│      column_name      │ column_type │  null   │   key   │ default │ extra │
+│        varchar        │   varchar   │ varchar │ varchar │ varchar │ int32 │
+├───────────────────────┼─────────────┼─────────┼─────────┼─────────┼───────┤
+│ VendorID              │ BIGINT      │ YES     │         │         │       │
+│ lpep_pickup_datetime  │ TIMESTAMP   │ YES     │         │         │       │
+│ lpep_dropoff_datetime │ TIMESTAMP   │ YES     │         │         │       │
+│ store_and_fwd_flag    │ VARCHAR     │ YES     │         │         │       │
+│ RatecodeID            │ DOUBLE      │ YES     │         │         │       │
+│ PULocationID          │ BIGINT      │ YES     │         │         │       │
+│ DOLocationID          │ BIGINT      │ YES     │         │         │       │
+│ passenger_count       │ DOUBLE      │ YES     │         │         │       │
+│ trip_distance         │ DOUBLE      │ YES     │         │         │       │
+│ fare_amount           │ DOUBLE      │ YES     │         │         │       │
+│ extra                 │ DOUBLE      │ YES     │         │         │       │
+│ mta_tax               │ DOUBLE      │ YES     │         │         │       │
+│ tip_amount            │ DOUBLE      │ YES     │         │         │       │
+│ tolls_amount          │ DOUBLE      │ YES     │         │         │       │
+│ ehail_fee             │ INTEGER     │ YES     │         │         │       │
+│ improvement_surcharge │ DOUBLE      │ YES     │         │         │       │
+│ total_amount          │ DOUBLE      │ YES     │         │         │       │
+│ payment_type          │ DOUBLE      │ YES     │         │         │       │
+│ trip_type             │ DOUBLE      │ YES     │         │         │       │
+│ congestion_surcharge  │ DOUBLE      │ YES     │         │         │       │
+├───────────────────────┴─────────────┴─────────┴─────────┴─────────┴───────┤
+│ 20 rows                                                         6 columns │
+└───────────────────────────────────────────────────────────────────────────┘
+
+DESCRIBE yellow_tripdata; 
+┌───────────────────────┬─────────────┬─────────┬─────────┬─────────┬───────┐
+│      column_name      │ column_type │  null   │   key   │ default │ extra │
+│        varchar        │   varchar   │ varchar │ varchar │ varchar │ int32 │
+├───────────────────────┼─────────────┼─────────┼─────────┼─────────┼───────┤
+│ VendorID              │ BIGINT      │ YES     │         │         │       │
+│ tpep_pickup_datetime  │ TIMESTAMP   │ YES     │         │         │       │
+│ tpep_dropoff_datetime │ TIMESTAMP   │ YES     │         │         │       │
+│ passenger_count       │ DOUBLE      │ YES     │         │         │       │
+│ trip_distance         │ DOUBLE      │ YES     │         │         │       │
+│ RatecodeID            │ DOUBLE      │ YES     │         │         │       │
+│ store_and_fwd_flag    │ VARCHAR     │ YES     │         │         │       │
+│ PULocationID          │ BIGINT      │ YES     │         │         │       │
+│ DOLocationID          │ BIGINT      │ YES     │         │         │       │
+│ payment_type          │ BIGINT      │ YES     │         │         │       │
+│ fare_amount           │ DOUBLE      │ YES     │         │         │       │
+│ extra                 │ DOUBLE      │ YES     │         │         │       │
+│ mta_tax               │ DOUBLE      │ YES     │         │         │       │
+│ tip_amount            │ DOUBLE      │ YES     │         │         │       │
+│ tolls_amount          │ DOUBLE      │ YES     │         │         │       │
+│ improvement_surcharge │ DOUBLE      │ YES     │         │         │       │
+│ total_amount          │ DOUBLE      │ YES     │         │         │       │
+│ congestion_surcharge  │ DOUBLE      │ YES     │         │         │       │
+│ airport_fee           │ INTEGER     │ YES     │         │         │       │
+├───────────────────────┴─────────────┴─────────┴─────────┴─────────┴───────┤
+│ 19 rows                                                         6 columns │
+└───────────────────────────────────────────────────────────────────────────┘
+
