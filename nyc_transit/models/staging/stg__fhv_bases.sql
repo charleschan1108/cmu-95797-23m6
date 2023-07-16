@@ -1,19 +1,20 @@
-WITH SOURCE AS (
-    SELECT
-        *
-    FROM 
-        {{ source('main', 'fhv_bases') }}
+with source as (
+
+    select * from {{ source('main', 'fhv_bases') }}
+
 ),
 
-RENAMED AS (
-    SELECT
+renamed as (
+
+    select
         base_number,
         base_name,
         dba,
         dba_category,
         filename
-    FROM
-        SOURCE
+
+    from source
+
 )
 
-SELECT * FROM RENAMED
+select * from renamed

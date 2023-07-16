@@ -1,24 +1,25 @@
-WITH SOURCE AS (
-    SELECT
-        *
-    FROM 
-        {{ source('main', 'central_park_weather') }}
+with source as (
+
+    select * from {{ source('main', 'central_park_weather') }}
+
 ),
 
-RENAMED AS (
-    SELECT
+renamed as (
+
+    select
         station,
         name,
-        date::date AS date,
-        awnd::double AS awnd,
-        prcp::double AS prcp,
-        snow::double AS snow,
-        snwd::double AS snwd,
-        tmax::int AS tmax,
-        tmin::int AS tmin,
+        date::date as date,
+        awnd::double as awnd,
+        prcp::double as prcp,
+        snow::double as snow,
+        snwd::double as snwd,
+        tmax::int as tmax,
+        tmin::int as tmin,
         filename
-    FROM 
-        SOURCE
+
+    from source
+
 )
 
-SELECT * FROM RENAMED
+select * from renamed
