@@ -5,60 +5,88 @@ sources:
         columns:
           - name: tripduration
             data_type: CHARACTER VARYING(256)
+            description: Seconds between start and end time.
           - name: starttime
             data_type: CHARACTER VARYING(256)
+            description: bike trip start time
           - name: stoptime
             data_type: CHARACTER VARYING(256)
+            description: bike trip end time
           - name: start station id
             data_type: CHARACTER VARYING(256)
+            description: bike trip origin station identification code
           - name: start station name
             data_type: CHARACTER VARYING(256)
+            description: bike trip origin station name
           - name: start station latitude
             data_type: CHARACTER VARYING(256)
+            description: bike trip origin station latitude
           - name: start station longitude
             data_type: CHARACTER VARYING(256)
+            description: bike trip origin station longitude
           - name: end station id
             data_type: CHARACTER VARYING(256)
+            description: bike trip destination station identification code
           - name: end station name
             data_type: CHARACTER VARYING(256)
+            description: bike trip destination station name
           - name: end station latitude
             data_type: CHARACTER VARYING(256)
+            description: bike trip destination station latitude
           - name: end station longitude
             data_type: CHARACTER VARYING(256)
+            description: bike trip destination station longitude
           - name: bikeid
             data_type: CHARACTER VARYING(256)
+            description: rental bike identification code
           - name: usertype
             data_type: CHARACTER VARYING(256)
+            description: Customer = 24-hour pass or 3-day pass user; Subscriber = Annual Member
           - name: birth year
             data_type: CHARACTER VARYING(256)
+            description: year of birth
           - name: gender
             data_type: CHARACTER VARYING(256)
+            description: Zero=unknown; 1=male; 2=female
           - name: ride_id
             data_type: CHARACTER VARYING(256)
+            description: ride identification code
           - name: rideable_type
             data_type: CHARACTER VARYING(256)
+            description: either one of docked_bike, classic_bike, electric_bike
           - name: started_at
             data_type: CHARACTER VARYING(256)
+            description: bike trip start time
           - name: ended_at
             data_type: CHARACTER VARYING(256)
+            description: bike trip end time
           - name: start_station_name
             data_type: CHARACTER VARYING(256)
+            description: bike trip origin station name
           - name: start_station_id
             data_type: CHARACTER VARYING(256)
+            description: bike trip origin station identification code
           - name: end_station_name
             data_type: CHARACTER VARYING(256)
+            description: bike trip destination station name
           - name: end_station_id
             data_type: CHARACTER VARYING(256)
+            description: bike trip destination station identification code
           - name: start_lat
             data_type: CHARACTER VARYING(256)
+            description: bike trip origin station latitude
           - name: start_lng
             data_type: CHARACTER VARYING(256)
+            description: bike trip origin station longtitude
           - name: end_lat
             data_type: CHARACTER VARYING(256)
+            description: bike trip detination station latitude
           - name: end_lng
             data_type: CHARACTER VARYING(256)
+            description: bike trip detination station longtitude
           - name: member_casual
             data_type: CHARACTER VARYING(256)
+            description: Member or casual ride
           - name: filename
             data_type: CHARACTER VARYING(256)
 
@@ -66,22 +94,55 @@ sources:
         columns:
           - name: station
             data_type: CHARACTER VARYING(256)
+            description: Station identification code. Please see http://www1.ncdc.noaa.gov/pub/data/ghcn/daily/ghcnd-stations.txt for a complete list of stations and their metadata
+            tests:
+              - not_null
           - name: name
             data_type: CHARACTER VARYING(256)
+            description: the name of the station (usually city/airport name). Optional output field
           - name: date
             data_type: CHARACTER VARYING(256)
+            description: the year of the record (4 digits) followed by month (2 digits) and day (2 digits)
+            tests:
+              - not_null
           - name: awnd
             data_type: CHARACTER VARYING(256)
+            description: Average daily wind speed (meters per second or miles per hour as per user preference)
+            tests:
+              - not_null:
+                  config:
+                      severity: warn
           - name: prcp
             data_type: CHARACTER VARYING(256)
+            description: Precipitation (mm or inches as per user preference, inches to hundredths on Daily Form pdf file)
+            tests:
+              - not_null:
+                  config:
+                      severity: warn
           - name: snow
             data_type: CHARACTER VARYING(256)
+            description: Snowfall (mm or inches as per user preference, inches to tenths on Daily Form pdf file)
+            tests:
+              - not_null:
+                  config:
+                      severity: warn
           - name: snwd
             data_type: CHARACTER VARYING(256)
+            description: Snow depth (mm or inches as per user preference, inches on Daily Form pdf file)
+            tests:
+              - not_null:
+                  config:
+                      severity: warn
           - name: tmax
             data_type: CHARACTER VARYING(256)
+            description:  Maximum temperature (Fahrenheit or Celsius as per user preference, Fahrenheit to tenths on Daily Form pdf file
+            tests:
+              - not_null
           - name: tmin
             data_type: CHARACTER VARYING(256)
+            description: Minimum temperature (Fahrenheit or Celsius as per user preference, Fahrenheit to tenths on Daily Form pdf file
+            tests:
+              - not_null
           - name: filename
             data_type: CHARACTER VARYING(256)
 
@@ -124,12 +185,19 @@ sources:
         columns:
           - name: base_number
             data_type: CHARACTER VARYING(256)
+            description: The TLC license number of the dispatching base
+            tests:
+              - not_null
+              - unique
           - name: base_name
             data_type: CHARACTER VARYING(256)
+            description: The official name of the base entity
           - name: dba
             data_type: CHARACTER VARYING(256)
+            description: The "doing business as" name of the base
           - name: dba_category
             data_type: CHARACTER VARYING(256)
+            description: The "doing business as" category name
           - name: filename
             data_type: CHARACTER VARYING(256)
 
@@ -137,16 +205,39 @@ sources:
         columns:
           - name: dispatching_base_num
             data_type: CHARACTER VARYING(256)
+            description: The TLC Base License Number of the base that dispatched the trip
+            tests:
+              - not_null
+              # - relationships: Move test to staging
+              #     to: source('main', 'fhv_bases')
+              #     field: base_number
           - name: pickup_datetime
             data_type: TIMESTAMP
+            description: The date and time of the trip pick-up
+            tests:
+              - not_null
           - name: dropoff_datetime
             data_type: TIMESTAMP
+            description: The date and time of the trip dropoff
+            tests:
+              - not_null
           - name: pulocationid
             data_type: DOUBLE
+            description: TLC Taxi Zone in which the trip began
+            tests:
+              - not_null:
+                  config:
+                      severity: warn
           - name: dolocationid
             data_type: DOUBLE
+            description: TLC Taxi Zone in which the trip ended
+            tests:
+              - not_null:
+                  config:
+                      severity: warn
           - name: sr_flag
             data_type: INTEGER
+            description: Indicates if the trip was a part of a shared ride chain offered by a High Volume FHV company (e.g. Uber Pool, Lyft Line). For shared trips, the value is 1. For non-shared rides, this field is null.
           - name: affiliated_base_number
             data_type: CHARACTER VARYING(256)
           - name: filename
@@ -156,52 +247,144 @@ sources:
         columns:
           - name: hvfhs_license_num
             data_type: CHARACTER VARYING(256)
+            description: "The TLC license number of the HVFHS base or business
+                      As of September 2019, the HVFHS licensees are the following:
+                      • HV0002: Juno
+                      • HV0003: Uber
+                      • HV0004: Via
+                      • HV0005: Lyft"
+            tests:
+              - not_null
           - name: dispatching_base_num
             data_type: CHARACTER VARYING(256)
+            descriptions: The TLC Base License Number of the base that dispatched the trip
+            tests:
+              - not_null:
+                  config:
+                      severity: warn
           - name: originating_base_num
             data_type: CHARACTER VARYING(256)
+            description: base number of the base that received the original trip request
+            tests:
+              - not_null:
+                  config:
+                      severity: warn
           - name: request_datetime
             data_type: TIMESTAMP
+            description: date/time when passenger requested to be picked up
+            tests:
+              - not_null:
+                  config:
+                      severity: warn
           - name: on_scene_datetime
             data_type: TIMESTAMP
+            description: date/time when driver arrived at the pick-up location (Accessible Vehicles-only)
+            tests:
+              - not_null:
+                  config:
+                      severity: warn
           - name: pickup_datetime
             data_type: TIMESTAMP
+            description: The date and time of the trip pick-up
+            tests:
+              - not_null
           - name: dropoff_datetime
             data_type: TIMESTAMP
+            description: The date and time of the trip drop-off
+            tests:
+              - not_null
           - name: pulocationid
             data_type: BIGINT
+            description: TLC Taxi Zone in which the trip began
+            tests:
+              - not_null
           - name: dolocationid
             data_type: BIGINT
+            description: TLC Taxi Zone in which the trip ended
+            tests:
+              - not_null
           - name: trip_miles
             data_type: DOUBLE
+            description: total miles for passenger trip
+            tests:
+              - not_null
           - name: trip_time
             data_type: BIGINT
+            description: total time in seconds for passenger trip
+            tests:
+              - not_null
           - name: base_passenger_fare
             data_type: DOUBLE
+            description: base passenger fare before tolls, tips, taxes, and fees
+            tests:
+              - not_null
           - name: tolls
             data_type: DOUBLE
+            description: total amount of all tolls paid in trip
+            tests:
+              - not_null
           - name: bcf
             data_type: DOUBLE
+            description: total amount collected in trip for Black Car Fund
+            tests:
+              - not_null
           - name: sales_tax
             data_type: DOUBLE
+            description: total amount collected in trip for NYS sales tax
+            tests:
+              - not_null
           - name: congestion_surcharge
             data_type: DOUBLE
+            description: total amount collected in trip for NYS congestion surcharge
           - name: airport_fee
             data_type: DOUBLE
+            description: $2.50 for both drop off and pick up at LaGuardia, Newark, and John F. Kennedy airports
           - name: tips
             data_type: DOUBLE
+            description: total amount of tips received from passenger
           - name: driver_pay
             data_type: DOUBLE
+            description: total driver pay (not including tolls or tips and net of commission, surcharges, or taxes)
           - name: shared_request_flag
             data_type: CHARACTER VARYING(256)
+            description: Did the passenger agree to a shared/pooled ride, regardless of whether they were matched? (Y/N)
+            tests: 
+              - accepted_values:
+                  values: ['Y', 'N']
+                  config:
+                      severity: warn
           - name: shared_match_flag
             data_type: CHARACTER VARYING(256)
+            description: Did the passenger share the vehicle with another passenger who booked separately at any point during the trip? (Y/N)
+            tests: 
+              - accepted_values:
+                  values: ['Y', 'N']
+                  config:
+                      severity: warn
           - name: access_a_ride_flag
             data_type: CHARACTER VARYING(256)
+            description: Was the trip administered on behalf of the Metropolitan Transportation Authority (MTA)? (Y/N)
+            tests: 
+              - accepted_values:
+                  values: ['Y', 'N']
+                  config:
+                      severity: warn
           - name: wav_request_flag
             data_type: CHARACTER VARYING(256)
+            description: Did the passenger request a wheelchair-accessible vehicle (WAV)? (Y/N)
+            tests: 
+              - accepted_values:
+                  values: ['Y', 'N']
+                  config:
+                      severity: warn
           - name: wav_match_flag
             data_type: CHARACTER VARYING(256)
+            description: Did the trip occur in a wheelchair-accessible vehicle (WAV)? (Y/N)
+            tests: 
+              - accepted_values:
+                  values: ['Y', 'N']
+                  config:
+                      severity: warn
           - name: filename
             data_type: CHARACTER VARYING(256)
 
