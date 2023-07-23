@@ -1,0 +1,259 @@
+
+-- show all results
+.maxrows 100
+
+-- Q1 bike_trips_and_duration_by_weekday.sql
+.read ../nyc_transit/target/compiled/nyc_transit/analyses/bike_trips_and_duration_by_weekday.sql
+SELECT
+    DATE_PART('weekday', started_at_ts) AS day_of_week,
+    COUNT(*) AS trip_cnt,
+    SUM(duration_sec) AS total_duration_sec
+FROM 
+    "main"."mart"."mart__fact_all_bike_trips"
+GROUP BY ALL;
+┌─────────────┬──────────┬────────────────────┐
+│ day_of_week │ trip_cnt │ total_duration_sec │
+│    int64    │  int64   │       int128       │
+├─────────────┼──────────┼────────────────────┤
+│           0 │  6394986 │         8951361521 │
+│           1 │  6238393 │         7102096567 │
+│           2 │  6828035 │         7543190734 │
+│           3 │  6971584 │         7675593991 │
+│           4 │  6733338 │         7508968438 │
+│           5 │  6798425 │         7952258761 │
+│           6 │  7203547 │        10224815832 │
+└─────────────┴──────────┴────────────────────┘
+
+-- Q2 taxi_trips_ending_at_airport.sql
+.read ../nyc_transit/target/compiled/nyc_transit/analyses/taxi_trips_ending_at_airport.sql
+WITH airport_service_zone AS (
+    SELECT 
+        LocationID::double AS LocationID,
+        Borough,
+        zone,
+        service_zone
+    FROM "main"."main"."taxi_zone_lookup"
+    WHERE service_zone in ('EWR', 'Airports')
+), 
+
+fhv_trip_airport AS (
+    SELECT
+        COUNT(*) AS trip_cnt,
+        'fhv' AS type
+    FROM "main"."staging"."stg__fhv_tripdata" taxi_trip
+    LEFT JOIN airport_service_zone lookup ON taxi_trip.DOlocationID = lookup.LocationID
+), 
+
+fhvhv_trip_airport AS (
+    SELECT
+        COUNT(*) AS trip_cnt,
+        'fhvhv' AS type
+    FROM "main"."staging"."stg__fhvhv_tripdata" taxi_trip
+    LEFT JOIN airport_service_zone lookup ON taxi_trip.DOlocationID = lookup.LocationID
+), 
+
+green_trip_airport AS (
+    SELECT
+        COUNT(*) AS trip_cnt,
+        'green' AS type
+    FROM "main"."staging"."stg__green_tripdata" taxi_trip
+    LEFT JOIN airport_service_zone lookup ON taxi_trip.DOlocationID = lookup.LocationID
+), 
+
+yellow_trip_airport AS (
+    SELECT
+        COUNT(*) AS trip_cnt,
+        'yellow' AS type
+    FROM "main"."staging"."stg__yellow_tripdata" taxi_trip
+    LEFT JOIN airport_service_zone lookup ON taxi_trip.DOlocationID = lookup.LocationID
+), 
+
+all_airport_trip AS (
+    SELECT * FROM fhv_trip_airport
+    UNION
+    SELECT * FROM fhvhv_trip_airport
+    UNION
+    SELECT * FROM green_trip_airport
+    UNION
+    SELECT * FROM yellow_trip_airport
+)
+
+SELECT *
+FROM all_airport_trip
+UNION ALL
+SELECT 
+    SUM(trip_cnt) AS trip_cnt,
+    'all' AS type
+FROM all_airport_trip
+┌───────────┬─────────┐
+│ trip_cnt  │  type   │
+│  int128   │ varchar │
+├───────────┼─────────┤
+│  55553400 │ yellow  │
+│   2802931 │ green   │
+│ 317906523 │ fhvhv   │
+│  29750730 │ fhv     │
+│ 406013584 │ all     │
+└───────────┴─────────┘
+
+-- Q3 inter_borough_taxi_trips_by_weekday.sql
+.read ../nyc_transit/target/compiled/nyc_transit/analyses/inter_borough_taxi_trips_by_weekday.sql
+WITH taxi_zone AS (
+    SELECT 
+        LocationID::double AS LocationID,
+        Borough,
+        zone,
+        service_zone
+    FROM "main"."main"."taxi_zone_lookup"
+), 
+
+fhv_trip AS (
+    SELECT
+        COUNT(*) AS trip_cnt,
+        'fhv' AS type,
+        weekday(pickup_datetime) AS day_of_week,
+        l.Borough AS start_borough,
+        l2.Borough AS end_borough
+    FROM "main"."staging"."stg__fhv_tripdata" t LEFT JOIN 
+    taxi_zone l ON t.PUlocationID = l.LocationID LEFT JOIN
+    taxi_zone l2 ON t.DOlocationID = l2.LocationID
+    GROUP BY ALL
+), 
+
+fhvhv_trip AS (
+    SELECT
+        COUNT(*) AS trip_cnt,
+        'fhvhv' AS type,
+        weekday(pickup_datetime) AS day_of_week,
+        l.Borough AS start_borough,
+        l2.Borough AS end_borough
+    FROM "main"."staging"."stg__fhvhv_tripdata" t LEFT JOIN 
+    taxi_zone l ON t.PUlocationID = l.LocationID LEFT JOIN
+    taxi_zone l2 ON t.DOlocationID = l2.LocationID
+    GROUP BY ALL
+), 
+
+green_trip AS (
+    SELECT
+        COUNT(*) AS trip_cnt,
+        'green' AS type,
+        weekday(lpep_pickup_datetime),
+        l.Borough AS start_borough,
+        l2.Borough AS end_borough
+    FROM "main"."staging"."stg__green_tripdata" t LEFT JOIN 
+    taxi_zone l ON t.PUlocationID = l.LocationID LEFT JOIN
+    taxi_zone l2 ON t.DOlocationID = l2.LocationID
+    GROUP BY ALL
+), 
+
+yellow_trip AS (
+    SELECT
+        COUNT(*) AS trip_cnt,
+        'yellow' AS type,
+        weekday(tpep_pickup_datetime),
+        l.Borough AS start_borough,
+        l2.Borough AS end_borough
+    FROM "main"."staging"."stg__yellow_tripdata" t LEFT JOIN 
+    taxi_zone l ON t.PUlocationID = l.LocationID LEFT JOIN
+    taxi_zone l2 ON t.DOlocationID = l2.LocationID
+    GROUP BY ALL
+), 
+
+all_trip AS (
+    SELECT * FROM fhv_trip
+    UNION ALL
+    SELECT * FROM fhvhv_trip
+    UNION ALL
+    SELECT * FROM green_trip
+    UNION ALL
+    SELECT * FROM yellow_trip
+),
+
+all_trip_agg AS (
+    SELECT
+        SUM(trip_cnt) AS trip_cnt,
+        start_borough,
+        end_borough
+    FROM all_trip
+    GROUP BY ALL
+)
+
+
+SELECT 
+    trip_cnt,
+    trip_cnt / SUM(trip_cnt) OVER () AS PERCENT,
+    start_borough,
+    end_borough
+FROM all_trip_agg
+┌───────────┬────────────────────────┬───────────────┬───────────────┐
+│ trip_cnt  │        PERCENT         │ start_borough │  end_borough  │
+│  int128   │         double         │    varchar    │    varchar    │
+├───────────┼────────────────────────┼───────────────┼───────────────┤
+│ 132698722 │    0.32683320762982154 │ Manhattan     │ Manhattan     │
+│  42890216 │    0.10563739167899368 │ Queens        │ Queens        │
+│  10469888 │    0.02578703869178919 │ Manhattan     │ Queens        │
+│   3236056 │   0.007970314608981162 │ Queens        │ Unknown       │
+│  71554324 │     0.1762362808038462 │ Brooklyn      │ Brooklyn      │
+│   8178623 │   0.020143717654530494 │ Brooklyn      │ Queens        │
+│   4757534 │   0.011717671988038705 │ Manhattan     │ Unknown       │
+│  11940125 │    0.02940819093382846 │ Manhattan     │ Brooklyn      │
+│   9654930 │    0.02377982013527902 │ Queens        │ Manhattan     │
+│   8019854 │   0.019752674087869928 │ Queens        │ Brooklyn      │
+│   2143679 │   0.005279820884022442 │ Bronx         │ Unknown       │
+│    920506 │   0.002267180302026545 │ Brooklyn      │ Unknown       │
+│   4402398 │   0.010842982041704299 │ Staten Island │ Staten Island │
+│  35533709 │    0.08751852253298008 │ Bronx         │ Bronx         │
+│   8078354 │   0.019896757937044787 │ Bronx         │ Manhattan     │
+│  10657725 │   0.026249675922173088 │ Brooklyn      │ Manhattan     │
+│   1519173 │  0.0037416802291028767 │ Bronx         │ Queens        │
+│   8531131 │   0.021011934911025047 │ Manhattan     │ Bronx         │
+│   1123195 │  0.0027663975892983916 │ Manhattan     │ EWR           │
+│   1542796 │  0.0037998630114799313 │ Queens        │ Bronx         │
+│    802873 │  0.0019774535425396015 │ Brooklyn      │ Bronx         │
+│    323356 │  0.0007964167031416368 │ Staten Island │ Brooklyn      │
+│   1947316 │   0.004796184356235726 │ Unknown       │ Unknown       │
+│    331592 │  0.0008167017387280323 │ Brooklyn      │ Staten Island │
+│     20213 │ 4.9784048604639786e-05 │ Bronx         │ Staten Island │
+│    164711 │ 0.00040567854498188414 │ Manhattan     │ Staten Island │
+│     49421 │ 0.00012172252837727715 │ Staten Island │ Queens        │
+│     95404 │ 0.00023497735977227795 │ Staten Island │ Unknown       │
+│    767706 │  0.0018908382139253745 │ Bronx         │ Brooklyn      │
+│    121627 │ 0.00029956386877932634 │ Staten Island │ Manhattan     │
+│     54583 │  0.0001344363887095955 │ Queens        │ Staten Island │
+│    182316 │ 0.00044903916318228407 │ Brooklyn      │ EWR           │
+│     55444 │  0.0001365570074128357 │ Queens        │ EWR           │
+│     45150 │ 0.00011120317590162206 │ Staten Island │ EWR           │
+│     27797 │  6.846322658997538e-05 │ Bronx         │ EWR           │
+│   2738419 │   0.006744648720915702 │ Unknown       │ Bronx         │
+│     19489 │  4.800085703536461e-05 │ Staten Island │ Bronx         │
+│   1129546 │  0.0027820399230780416 │ Unknown       │ Queens        │
+│   1194555 │   0.002942155255573912 │ Unknown       │ Manhattan     │
+│     11916 │  2.934877173961746e-05 │ Unknown       │ EWR           │
+│   2186518 │   0.005385332132138712 │ Unknown       │ Brooklyn      │
+│      1722 │  4.241237406480469e-06 │ EWR           │ Brooklyn      │
+│      8167 │  2.011509053352264e-05 │ EWR           │ Manhattan     │
+│      1019 │ 2.5097682446013926e-06 │ EWR           │ Staten Island │
+│      4612 │ 1.1359225852896587e-05 │ EWR           │ EWR           │
+│       877 │ 2.1600262517325036e-06 │ EWR           │ Queens        │
+│     23620 │  5.817539346171235e-05 │ Unknown       │ Staten Island │
+│      2730 │  6.723912961493426e-06 │ EWR           │ Unknown       │
+│       133 │  3.275752468419874e-07 │ EWR           │ Bronx         │
+│   1723539 │   0.004245027920051069 │               │ Manhattan     │
+│   4559497 │   0.011229912445490986 │               │ Bronx         │
+│   1989828 │   0.004900890212579685 │               │ Queens        │
+│   4380861 │   0.010789937018461924 │               │ Brooklyn      │
+│    365443 │    0.00090007579647877 │               │ Unknown       │
+│     22627 │   5.57296624834109e-05 │               │ EWR           │
+│     30799 │  7.585706787583737e-05 │               │ Staten Island │
+│   2607196 │  0.0064214501749281375 │               │               │
+│      4064 │ 1.0009517317036368e-05 │ Queens        │               │
+│      1644 │ 4.0491256075806565e-06 │ Bronx         │               │
+│      1871 │ 4.6082202018147255e-06 │ Manhattan     │               │
+│       140 │ 3.4481604930735517e-07 │ Staten Island │               │
+│    159739 │  0.0003934326492879115 │ Brooklyn      │               │
+│       525 │  1.293060184902582e-06 │ Unknown       │               │
+│        41 │ 1.0098184301143973e-07 │ EWR           │               │
+├───────────┴────────────────────────┴───────────────┴───────────────┤
+│ 64 rows                                                  4 columns │
+└────────────────────────────────────────────────────────────────────┘
+
