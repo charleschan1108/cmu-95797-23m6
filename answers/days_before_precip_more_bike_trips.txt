@@ -1,0 +1,53 @@
+with bike_data as ( 
+    SELECT 
+        date_trunc('day', started_at_ts)::date as date,
+        start_station_id,
+        COUNT(*) AS bike_trips
+    FROM "main"."mart"."mart__fact_all_bike_trips" 
+    GROUP BY ALL
+),
+
+ weather_bike_trips AS (
+    SELECT 
+        bd.date,
+        bd.bike_trips,
+        w.station,
+        w.name,
+        w.prcp,
+        w.snow
+    FROM bike_data bd
+    INNER JOIN "main"."staging"."stg__central_park_weather"  w ON bd.date = w.date
+),
+
+weather_bike_trips_date_type AS (
+    SELECT 
+        station,
+        name,
+        date,
+        prcp,
+        snow,
+        CASE 
+            WHEN (LEAD(prcp, 1) OVER next_day > 0) AND (prcp = 0) THEN 'days_prior_to_prcp_or_snow'
+            WHEN (LEAD(snow, 1) OVER next_day > 0) AND (snow = 0) THEN 'days_prior_to_prcp_or_snow'
+            WHEN (prcp > 0) OR (snow > 0) THEN 'prcp_or_snow_days'
+            ELSE 'days_prior_to_prcp_or_snow'
+        END AS date_type,
+        bike_trips
+    FROM weather_bike_trips
+    window next_day AS (
+        ORDER BY date
+    )
+)
+
+SELECT 
+    date_type,
+    AVG(bike_trips) as avg_bike_trips_cnt
+FROM weather_bike_trips_date_type
+GROUP BY ALL
+┌────────────────────────────┬────────────────────┐
+│         date_type          │ avg_bike_trips_cnt │
+│          varchar           │       double       │
+├────────────────────────────┼────────────────────┤
+│ days_prior_to_prcp_or_snow │ 59.557529253251076 │
+│ prcp_or_snow_days          │ 46.525233118774324 │
+└────────────────────────────┴────────────────────┘

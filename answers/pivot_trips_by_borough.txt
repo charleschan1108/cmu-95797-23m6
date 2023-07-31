@@ -1,0 +1,157 @@
+-- Q4 pivot_trips_by_borough.sql
+.read ../nyc_transit/target/compiled/nyc_transit/analyses/pivot_trips_by_borough.sql
+/** 
+Outout:
+
+Create pivot table with:
+index being pick up borough
+columns being drop off borough
+values being number of trips
+**/
+
+-- Implementation 1: duckdb native function
+-- PIVOT "main"."mart"."mart__fact_trips_by_borough" 
+-- ON doborough USING SUM(trips) -- column will be drop off borough 
+-- GROUP BY puborough -- rows will be pick up borough
+
+-- Implementation 2: dbt utils method
+SELECT
+      puborough,
+      
+  
+    sum(
+      
+      case
+      when doborough = 'Queens'
+        then trips
+      else 0
+      end
+    )
+    
+      
+            as "Queens"
+      
+    
+    ,
+  
+    sum(
+      
+      case
+      when doborough = 'Manhattan'
+        then trips
+      else 0
+      end
+    )
+    
+      
+            as "Manhattan"
+      
+    
+    ,
+  
+    sum(
+      
+      case
+      when doborough = 'Brooklyn'
+        then trips
+      else 0
+      end
+    )
+    
+      
+            as "Brooklyn"
+      
+    
+    ,
+  
+    sum(
+      
+      case
+      when doborough = 'Bronx'
+        then trips
+      else 0
+      end
+    )
+    
+      
+            as "Bronx"
+      
+    
+    ,
+  
+    sum(
+      
+      case
+      when doborough = 'Staten Island'
+        then trips
+      else 0
+      end
+    )
+    
+      
+            as "Staten Island"
+      
+    
+    ,
+  
+    sum(
+      
+      case
+      when doborough = 'Unknown'
+        then trips
+      else 0
+      end
+    )
+    
+      
+            as "Unknown"
+      
+    
+    ,
+  
+    sum(
+      
+      case
+      when doborough = 'EWR'
+        then trips
+      else 0
+      end
+    )
+    
+      
+            as "EWR"
+      
+    
+    ,
+  
+    sum(
+      
+      case
+      when doborough = 'None'
+        then trips
+      else 0
+      end
+    )
+    
+      
+            as "None"
+      
+    
+    
+  
+
+    from "main"."mart"."mart__fact_trips_by_borough" 
+    group by puborough
+┌───────────────┬──────────┬───────────┬──────────┬──────────┬───────────────┬─────────┬─────────┬────────┐
+│   puborough   │  Queens  │ Manhattan │ Brooklyn │  Bronx   │ Staten Island │ Unknown │   EWR   │  None  │
+│    varchar    │  int128  │  int128   │  int128  │  int128  │    int128     │ int128  │ int128  │ int128 │
+├───────────────┼──────────┼───────────┼──────────┼──────────┼───────────────┼─────────┼─────────┼────────┤
+│ Brooklyn      │  8178623 │  10657725 │ 71554324 │   802873 │        331592 │  920506 │  182316 │      0 │
+│ Manhattan     │ 10469888 │ 132698722 │ 11940125 │  8531131 │        164711 │ 4757534 │ 1123195 │      0 │
+│ Queens        │ 42890216 │   9654930 │  8019854 │  1542796 │         54583 │ 3236056 │   55444 │      0 │
+│ Bronx         │  1519173 │   8078354 │   767706 │ 35533709 │         20213 │ 2143679 │   27797 │      0 │
+│ Staten Island │    49421 │    121627 │   323356 │    19489 │       4402398 │   95404 │   45150 │      0 │
+│ EWR           │      877 │      8167 │     1722 │      133 │          1019 │    2730 │    4612 │      0 │
+│ Unknown       │  1129546 │   1194555 │  2186518 │  2738419 │         23620 │ 1947316 │   11916 │      0 │
+│               │  1989828 │   1723539 │  4380861 │  4559497 │         30799 │  365443 │   22627 │      0 │
+└───────────────┴──────────┴───────────┴──────────┴──────────┴───────────────┴─────────┴─────────┴────────┘

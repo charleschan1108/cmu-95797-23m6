@@ -165,6 +165,7 @@ data/
 *.wal
 .user.yml
 *Zone.Identifier
+*tmp.tmp/
 
 # dbt specifics
 target/

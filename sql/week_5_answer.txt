@@ -1,0 +1,940 @@
+
+-- show all results
+.maxrows 100
+
+-- Q1 trips_duration_grouped_by_borough_zone.sql
+.read ../nyc_transit/target/compiled/nyc_transit/analyses/trips_duration_grouped_by_borough_zone.sql
+-- set temp_directory to avoid out of memory error
+
+-- Calculate the number of trips and average duration by all borough and zone pairs in the data
+
+SELECT 
+    puborough,
+    doborough,
+    puzone,
+    dozone,
+    trips,
+    duration_min / trips AS avg_trip_duration_min,
+    duration_sec / trips AS avg_trip_duration_min
+FROM "main"."mart"."mart__fact_trips_by_borough"
+
+-- by origin borough and zone, sql:
+-- SELECT 
+--     puborough,
+--     puzone,
+--     SUM(trips) as trip_num,
+--     SUM(duration_min) / SUM(trips) AS avg_trip_duration_min,
+--     SUM(duration_sec) / SUM(trips) AS avg_trip_duration_min
+-- FROM "main"."mart"."mart__fact_trips_by_borough"
+
+-- by destination borough and zone, sql:
+-- SELECT 
+--     doborough,
+--     dozone,
+--     SUM(trips) as trip_num,
+--     SUM(duration_min) / SUM(trips) AS avg_trip_duration_min,
+--     SUM(duration_sec) / SUM(trips) AS avg_trip_duration_min
+-- FROM "main"."mart"."mart__fact_trips_by_borough"
+┌───────────────┬───────────────┬──────────────────────┬───┬────────┬──────────────────────┬──────────────────────┐
+│   puborough   │   doborough   │        puzone        │ … │ trips  │ avg_trip_duration_…  │ avg_trip_duration_…  │
+│    varchar    │    varchar    │       varchar        │   │ int64  │        double        │        double        │
+├───────────────┼───────────────┼──────────────────────┼───┼────────┼──────────────────────┼──────────────────────┤
+│ Manhattan     │ Manhattan     │ Battery Park City    │ … │  21265 │    25.24989419233482 │   1514.7748412885023 │
+│ Brooklyn      │ Manhattan     │ Brooklyn Heights     │ … │  13600 │    17.24639705882353 │   1034.9897058823528 │
+│ Brooklyn      │ Queens        │ Gravesend            │ … │    727 │   30.753782668500687 │   1846.3356258596973 │
+│ Manhattan     │ Manhattan     │ Alphabet City        │ … │  18475 │     16.2034100135318 │    972.0981867388363 │
+│ Brooklyn      │ Queens        │ Starrett City        │ … │    940 │   20.870212765957447 │   1251.2063829787235 │
+│ Brooklyn      │ Queens        │ Erasmus              │ … │   1158 │     34.1692573402418 │     2049.60621761658 │
+│ Bronx         │ Queens        │ Mott Haven/Port Mo…  │ … │   1936 │    24.50154958677686 │   1471.2071280991736 │
+│ Manhattan     │ Manhattan     │ Manhattan Valley     │ … │  12651 │   22.066635048612756 │   1324.2677258714725 │
+│ Brooklyn      │ Brooklyn      │ DUMBO/Vinegar Hill   │ … │   1910 │    32.74712041884817 │    1963.989005235602 │
+│ Queens        │ Manhattan     │ Glen Oaks            │ … │    360 │    37.06111111111111 │   2222.9055555555556 │
+│ Queens        │ Brooklyn      │ Kew Gardens          │ … │   3215 │    20.70171073094868 │   1242.2550544323483 │
+│ Manhattan     │ Bronx         │ Flatiron             │ … │    235 │    37.65531914893617 │   2260.7404255319148 │
+│ Queens        │ Queens        │ Hammels/Arverne      │ … │    387 │    38.12403100775194 │   2287.2118863049095 │
+│ Queens        │ Manhattan     │ Briarwood/Jamaica …  │ … │    548 │   31.023722627737225 │   1861.7992700729926 │
+│ Manhattan     │ Manhattan     │ Chinatown            │ … │  18954 │    9.401340086525272 │    564.2391579613802 │
+│ Queens        │ Brooklyn      │ Forest Park/Highla…  │ … │     25 │                31.12 │               1868.2 │
+│ Brooklyn      │ Manhattan     │ Ocean Hill           │ … │   1282 │   34.793291731669264 │   2087.0475819032763 │
+│ Brooklyn      │ Bronx         │ Boerum Hill          │ … │    382 │    47.60732984293194 │   2857.5942408376964 │
+│ Bronx         │ Manhattan     │ Riverdale/North Ri…  │ … │   2118 │    28.93626062322946 │   1736.2521246458923 │
+│ Bronx         │ Bronx         │ Soundview/Castle H…  │ … │  19608 │   15.999694002447981 │    960.5815993472053 │
+│ Queens        │ Bronx         │ East Elmhurst        │ … │    929 │   22.843918191603876 │   1371.4499461786868 │
+│ Brooklyn      │ Manhattan     │ Brighton Beach       │ … │    713 │    33.92005610098177 │   2035.4586255259467 │
+│ Queens        │ Manhattan     │ Elmhurst/Maspeth     │ … │    927 │   25.458468176914778 │   1528.1272923408847 │
+│ Brooklyn      │ Queens        │ Clinton Hill         │ … │   1515 │    36.93531353135314 │   2216.3854785478547 │
+│ Queens        │ Queens        │ Saint Albans         │ … │   1964 │   30.290224032586558 │   1817.0005091649693 │
+│ Bronx         │ Manhattan     │ Woodlawn/Wakefield   │ … │   1384 │   28.610549132947977 │   1717.2290462427745 │
+│ Brooklyn      │ Manhattan     │ Williamsburg (Nort…  │ … │  23654 │   20.663481863532596 │   1239.8367295172063 │
+│ Bronx         │ Queens        │ Mott Haven/Port Mo…  │ … │   3579 │     20.4445375803297 │   1226.5806091086895 │
+│ Brooklyn      │ Brooklyn      │ Manhattan Beach      │ … │    649 │    40.07704160246533 │   2404.6348228043144 │
+│ Bronx         │ Brooklyn      │ West Concourse       │ … │     66 │    34.92424242424242 │    2098.181818181818 │
+│ Queens        │ Bronx         │ Glendale             │ … │    217 │   31.981566820276498 │   1920.4239631336407 │
+│ Manhattan     │ Manhattan     │ Stuy Town/Peter Co…  │ … │   5628 │   11.513326226012794 │    690.6032338308457 │
+│ Bronx         │ Brooklyn      │ Williamsbridge/Oli…  │ … │    457 │    51.73960612691466 │    3105.109409190372 │
+│ Manhattan     │ Brooklyn      │ Lincoln Square West  │ … │   1647 │    38.89496053430479 │   2333.3454766241653 │
+│ Queens        │ Queens        │ Queens Village       │ … │    399 │    37.63157894736842 │   2259.3684210526317 │
+│ Brooklyn      │ Brooklyn      │ Columbia Street      │ … │    322 │   31.127329192546583 │    1867.251552795031 │
+│ Brooklyn      │ Queens        │ Bushwick North       │ … │   1873 │   23.575547250400426 │   1415.1681793913508 │
+│ Brooklyn      │ Manhattan     │ Flatbush/Ditmas Park │ … │   5317 │    33.30449501598646 │    1998.371826217792 │
+│ Bronx         │ Manhattan     │ Pelham Bay Park      │ … │    455 │   28.534065934065936 │   1715.7362637362637 │
+│ Manhattan     │ Manhattan     │ Gramercy             │ … │  21959 │   25.860011840247733 │   1551.3174552575254 │
+│ Manhattan     │ Brooklyn      │ Manhattan Valley     │ … │    306 │   51.869281045751634 │     3110.02614379085 │
+│ Manhattan     │ Queens        │ Lenox Hill West      │ … │    183 │   46.377049180327866 │     2783.03825136612 │
+│ Brooklyn      │ Queens        │ Fort Greene          │ … │   8321 │    21.85722869847374 │   1311.1853142651123 │
+│ Bronx         │ Manhattan     │ Williamsbridge/Oli…  │ … │   5359 │    18.20302295204329 │   1091.9093114387013 │
+│ Manhattan     │ Manhattan     │ Penn Station/Madis…  │ … │ 115582 │    8.765093180599056 │    525.9869875932238 │
+│ Queens        │ Brooklyn      │ Woodside             │ … │    843 │   30.615658362989326 │   1836.1293001186239 │
+│ Manhattan     │ Queens        │ Murray Hill          │ … │  34544 │   13.220096109309866 │    792.8438513200556 │
+│ Brooklyn      │ Manhattan     │ East Flatbush/Rems…  │ … │    685 │    39.01751824817518 │    2340.797080291971 │
+│ Brooklyn      │ Brooklyn      │ Cobble Hill          │ … │   6353 │   17.115693373209506 │   1026.6589013064695 │
+│ Queens        │ Queens        │ Douglaston           │ … │    743 │    22.73351278600269 │   1364.5033647375506 │
+│   ·           │   ·           │     ·                │ · │      · │            ·         │            ·         │
+│   ·           │   ·           │     ·                │ · │      · │            ·         │            ·         │
+│   ·           │   ·           │     ·                │ · │      · │            ·         │            ·         │
+│ Queens        │ Brooklyn      │ Astoria Park         │ … │      9 │   35.666666666666664 │   2135.1111111111113 │
+│ Bronx         │ Queens        │ Rikers Island        │ … │      1 │                 40.0 │               2384.0 │
+│ Manhattan     │ Queens        │ Inwood Hill Park     │ … │     40 │               36.675 │             2198.275 │
+│ Bronx         │ Queens        │ Pelham Bay Park      │ … │     28 │                34.75 │   2085.8571428571427 │
+│ Brooklyn      │ Manhattan     │ Dyker Heights        │ … │    119 │    44.61344537815126 │   2679.3949579831933 │
+│ Manhattan     │ Staten Island │ Yorkville East       │ … │      1 │                 69.0 │               4140.0 │
+│ Manhattan     │ Staten Island │ Garment District     │ … │      2 │                 32.5 │               1948.0 │
+│ Bronx         │ Queens        │ Bronx Park           │ … │     66 │   28.666666666666668 │   1720.2878787878788 │
+│ Queens        │ Brooklyn      │ Bay Terrace/Fort T…  │ … │     66 │    44.43939393939394 │    2670.787878787879 │
+│ Brooklyn      │ Staten Island │ Stuyvesant Heights   │ … │     87 │   45.701149425287355 │   2738.2183908045977 │
+│ Brooklyn      │ Manhattan     │ Dyker Heights        │ … │     42 │    45.04761904761905 │   2695.2380952380954 │
+│ Staten Island │ Manhattan     │ Westerleigh          │ … │     48 │   46.916666666666664 │               2820.0 │
+│ Staten Island │ Brooklyn      │ Freshkills Park      │ … │     21 │   26.571428571428573 │   1602.6666666666667 │
+│ Queens        │ Manhattan     │ Auburndale           │ … │     64 │            38.828125 │          2327.609375 │
+│ Staten Island │ Queens        │ Freshkills Park      │ … │      1 │                 54.0 │               3245.0 │
+│ Bronx         │ Brooklyn      │ Bronx Park           │ … │     12 │                55.25 │               3305.5 │
+│ Queens        │ Staten Island │ Sunnyside            │ … │     67 │    45.35820895522388 │   2721.0149253731342 │
+│ Brooklyn      │ Manhattan     │ Dyker Heights        │ … │     56 │   43.410714285714285 │   2605.2678571428573 │
+│ Bronx         │ Queens        │ Bronx Park           │ … │     15 │   31.466666666666665 │               1875.4 │
+│ Staten Island │ Queens        │ Freshkills Park      │ … │      1 │                 75.0 │               4464.0 │
+│ Staten Island │ Queens        │ Freshkills Park      │ … │      1 │                 43.0 │               2550.0 │
+│ Queens        │ Brooklyn      │ Bay Terrace/Fort T…  │ … │     26 │                 39.0 │   2347.3076923076924 │
+│ Queens        │ Manhattan     │ Ridgewood            │ … │   8227 │    28.10429074996961 │    1686.429439649933 │
+│ Queens        │ Queens        │ Ridgewood            │ … │    606 │   29.044554455445546 │   1744.6072607260726 │
+│ Queens        │ Unknown       │ Ridgewood            │ … │     76 │   12.460526315789474 │    747.5921052631579 │
+│ Queens        │ Queens        │ Ridgewood            │ … │   1891 │   28.345848757271284 │   1701.5446853516657 │
+│               │ Manhattan     │                      │ … │   7112 │    21.57269403824522 │   1294.2826209223847 │
+│               │ Manhattan     │                      │ … │   7619 │   29.206588791179946 │   1752.2118388239926 │
+│ Queens        │ Queens        │ Ridgewood            │ … │   4899 │   17.752806695243926 │   1065.1459481526842 │
+│ Queens        │ Queens        │ Ridgewood            │ … │   1789 │    24.61430967020682 │   1476.6372275013973 │
+│ Queens        │ Queens        │ Murray Hill-Queens   │ … │    891 │   28.179573512906845 │   1691.7104377104376 │
+│ Queens        │ Bronx         │ Middle Village       │ … │     38 │    33.18421052631579 │   1988.6315789473683 │
+│ Queens        │ Brooklyn      │ Murray Hill-Queens   │ … │    635 │     33.1496062992126 │   1990.5952755905512 │
+│ Queens        │ Queens        │ Ridgewood            │ … │    862 │   26.955916473317867 │   1618.5614849187934 │
+│ Queens        │ Brooklyn      │ Middle Village       │ … │    335 │    33.51940298507463 │    2012.579104477612 │
+│ Brooklyn      │ Brooklyn      │ Bay Ridge            │ … │   6563 │   33.104677738838944 │   1986.2611610543959 │
+│ Queens        │ Manhattan     │ Middle Village       │ … │    988 │    26.61740890688259 │   1597.7823886639676 │
+│ Queens        │ Unknown       │ Murray Hill-Queens   │ … │     60 │   12.166666666666666 │                729.5 │
+│ Queens        │ Queens        │ Middle Village       │ … │    764 │   24.642670157068064 │   1476.9803664921467 │
+│ Queens        │ Unknown       │ Middle Village       │ … │     57 │   21.035087719298247 │   1261.7368421052631 │
+│               │ Manhattan     │                      │ … │   8024 │    29.95725324027916 │   1797.0358923230308 │
+│ Queens        │ Brooklyn      │ Middle Village       │ … │    491 │    32.65376782077393 │   1960.5274949083503 │
+│ Queens        │ Manhattan     │ Middle Village       │ … │    747 │   26.779116465863453 │   1606.0388219544845 │
+│ Queens        │ Manhattan     │ Middle Village       │ … │    355 │    33.25633802816901 │   1996.2028169014084 │
+│ Queens        │ Manhattan     │ Middle Village       │ … │     89 │    36.73033707865169 │   2206.2359550561796 │
+│ Queens        │ Staten Island │ Middle Village       │ … │     12 │   44.583333333333336 │   2676.5833333333335 │
+│ Queens        │ Queens        │ Ridgewood            │ … │ 224303 │     7.37526916715336 │    442.5740939711016 │
+│ Queens        │ Queens        │ Ridgewood            │ … │   2156 │   26.473098330241186 │    1588.811224489796 │
+│ Queens        │ Queens        │ Murray Hill-Queens   │ … │   2092 │   27.626195028680687 │   1657.5559273422562 │
+│ Brooklyn      │ Queens        │ Bay Ridge            │ … │    282 │   48.705673758865245 │   2924.7801418439717 │
+├───────────────┴───────────────┴──────────────────────┴───┴────────┴──────────────────────┴──────────────────────┤
+│ 67476 rows (100 shown)                                                                      7 columns (6 shown) │
+└─────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+-- Q2 taxi_trips_no_valid_pickup_location_id.sql
+.read ../nyc_transit/target/compiled/nyc_transit/analyses/taxi_trips_no_valid_pickup_location_id.sql
+SELECT
+    type,
+    pickup_datetime,
+    dropoff_datetime,
+    duration_min,
+    duration_sec,
+    pulocationid,
+    dolocationid,
+    dim_loc.locationid, -- make sure it is null, i.e. no valid record in dim_location table
+    dim_loc.borough -- make sure it is null, i.e. no valid record in dim_location table
+FROM 
+    "main"."mart"."mart__fact_all_taxi_trips" taxi_trip
+LEFT JOIN "main"."mart"."mart__dim_locations" dim_loc ON taxi_trip.pulocationid = dim_loc.locationid
+WHERE dim_loc.locationid is NULL -- keeping those trips without valid pickup location in dim_location table
+┌─────────┬─────────────────────┬─────────────────────┬───┬──────────────┬──────────────┬────────────┬─────────┐
+│  type   │   pickup_datetime   │  dropOff_datetime   │ … │ PUlocationID │ DOlocationID │ LocationID │ Borough │
+│ varchar │      timestamp      │      timestamp      │   │    double    │    double    │   int32    │ varchar │
+├─────────┼─────────────────────┼─────────────────────┼───┼──────────────┼──────────────┼────────────┼─────────┤
+│ fhv     │ 2020-03-02 22:32:58 │ 2020-03-02 22:37:29 │ … │              │         66.0 │            │         │
+│ fhv     │ 2020-03-02 22:46:42 │ 2020-03-02 23:02:45 │ … │              │        225.0 │            │         │
+│ fhv     │ 2020-03-02 22:42:15 │ 2020-03-02 22:53:36 │ … │              │         61.0 │            │         │
+│ fhv     │ 2020-03-02 22:20:10 │ 2020-03-02 22:38:42 │ … │              │        254.0 │            │         │
+│ fhv     │ 2020-03-02 22:53:47 │ 2020-03-02 23:07:05 │ … │              │        265.0 │            │         │
+│ fhv     │ 2020-03-02 22:28:20 │ 2020-03-02 22:34:31 │ … │              │          3.0 │            │         │
+│ fhv     │ 2020-03-02 22:41:47 │ 2020-03-02 22:49:01 │ … │              │        254.0 │            │         │
+│ fhv     │ 2020-03-02 22:38:20 │ 2020-03-03 01:06:41 │ … │              │        209.0 │            │         │
+│ fhv     │ 2020-03-02 22:46:02 │ 2020-03-02 22:53:50 │ … │              │        265.0 │            │         │
+│ fhv     │ 2020-03-02 22:32:51 │ 2020-03-02 22:50:55 │ … │              │        159.0 │            │         │
+│ fhv     │ 2020-03-02 22:38:07 │ 2020-03-02 22:49:28 │ … │              │        212.0 │            │         │
+│ fhv     │ 2020-03-02 22:03:25 │ 2020-03-02 22:12:39 │ … │              │        213.0 │            │         │
+│ fhv     │ 2020-03-02 22:22:27 │ 2020-03-02 22:34:04 │ … │              │         47.0 │            │         │
+│ fhv     │ 2020-03-02 22:06:34 │ 2020-03-02 22:33:55 │ … │              │        136.0 │            │         │
+│ fhv     │ 2020-03-02 22:08:47 │ 2020-03-02 22:16:58 │ … │              │         81.0 │            │         │
+│ fhv     │ 2020-03-02 22:29:18 │ 2020-03-02 22:37:55 │ … │              │          3.0 │            │         │
+│ fhv     │ 2020-03-02 22:42:15 │ 2020-03-02 23:24:55 │ … │              │        174.0 │            │         │
+│ fhv     │ 2020-03-02 22:34:28 │ 2020-03-02 22:46:14 │ … │              │          3.0 │            │         │
+│ fhv     │ 2020-03-02 22:04:59 │ 2020-03-02 22:08:38 │ … │              │        254.0 │            │         │
+│ fhv     │ 2020-03-02 22:16:14 │ 2020-03-02 22:29:53 │ … │              │         78.0 │            │         │
+│ fhv     │ 2020-03-02 22:55:09 │ 2020-03-02 23:04:39 │ … │              │        265.0 │            │         │
+│ fhv     │ 2020-03-02 22:41:55 │ 2020-03-02 22:50:41 │ … │              │        254.0 │            │         │
+│ fhv     │ 2020-03-02 22:01:50 │ 2020-03-02 22:24:23 │ … │              │        265.0 │            │         │
+│ fhv     │ 2020-03-02 22:31:17 │ 2020-03-02 22:41:30 │ … │              │         51.0 │            │         │
+│ fhv     │ 2020-03-02 22:17:12 │ 2020-03-02 22:35:07 │ … │              │         81.0 │            │         │
+│ fhv     │ 2020-03-02 22:40:17 │ 2020-03-02 22:48:57 │ … │              │          3.0 │            │         │
+│ fhv     │ 2020-03-02 22:53:51 │ 2020-03-02 23:00:45 │ … │              │         81.0 │            │         │
+│ fhv     │ 2020-03-02 22:40:18 │ 2020-03-02 22:47:02 │ … │              │         81.0 │            │         │
+│ fhv     │ 2020-03-02 22:49:48 │ 2020-03-02 22:55:43 │ … │              │        259.0 │            │         │
+│ fhv     │ 2020-03-02 22:21:40 │ 2020-03-02 22:43:10 │ … │              │        200.0 │            │         │
+│ fhv     │ 2020-03-02 22:37:30 │ 2020-03-02 22:40:46 │ … │              │        265.0 │            │         │
+│ fhv     │ 2020-03-02 22:46:47 │ 2020-03-02 22:57:09 │ … │              │         81.0 │            │         │
+│ fhv     │ 2020-03-02 22:28:18 │ 2020-03-02 22:31:34 │ … │              │         36.0 │            │         │
+│ fhv     │ 2020-03-02 22:04:26 │ 2020-03-02 22:08:50 │ … │              │        225.0 │            │         │
+│ fhv     │ 2020-03-02 22:56:51 │ 2020-03-02 22:59:55 │ … │              │         80.0 │            │         │
+│ fhv     │ 2020-03-02 22:45:36 │ 2020-03-02 22:54:01 │ … │              │         35.0 │            │         │
+│ fhv     │ 2020-03-02 22:54:14 │ 2020-03-02 23:01:49 │ … │              │         77.0 │            │         │
+│ fhv     │ 2020-03-02 22:25:35 │ 2020-03-02 22:30:48 │ … │              │         76.0 │            │         │
+│ fhv     │ 2020-03-02 22:46:41 │ 2020-03-02 22:52:34 │ … │              │         76.0 │            │         │
+│ fhv     │ 2020-03-02 22:05:36 │ 2020-03-02 22:08:37 │ … │              │        119.0 │            │         │
+│ fhv     │ 2020-03-02 22:39:07 │ 2020-03-02 22:46:02 │ … │              │        116.0 │            │         │
+│ fhv     │ 2020-03-02 22:01:31 │ 2020-03-02 22:07:42 │ … │              │        119.0 │            │         │
+│ fhv     │ 2020-03-02 22:04:53 │ 2020-03-02 22:15:32 │ … │              │        168.0 │            │         │
+│ fhv     │ 2020-03-02 22:26:06 │ 2020-03-02 22:35:47 │ … │              │         42.0 │            │         │
+│ fhv     │ 2020-03-02 22:54:36 │ 2020-03-02 23:13:27 │ … │              │         18.0 │            │         │
+│ fhv     │ 2020-03-02 22:22:28 │ 2020-03-02 22:30:48 │ … │              │        244.0 │            │         │
+│ fhv     │ 2020-03-02 22:43:05 │ 2020-03-02 22:51:42 │ … │              │         42.0 │            │         │
+│ fhv     │ 2020-03-02 22:41:23 │ 2020-03-02 22:59:11 │ … │              │        244.0 │            │         │
+│ fhv     │ 2020-03-02 22:15:52 │ 2020-03-02 22:29:51 │ … │              │        235.0 │            │         │
+│ fhv     │ 2020-03-02 22:12:00 │ 2020-03-02 22:32:47 │ … │              │        241.0 │            │         │
+│  ·      │          ·          │          ·          │ · │      ·       │          ·   │     ·      │    ·    │
+│  ·      │          ·          │          ·          │ · │      ·       │          ·   │     ·      │    ·    │
+│  ·      │          ·          │          ·          │ · │      ·       │          ·   │     ·      │    ·    │
+│ fhv     │ 2020-12-27 03:22:49 │ 2020-12-27 03:28:32 │ … │              │        235.0 │            │         │
+│ fhv     │ 2020-12-27 03:35:27 │ 2020-12-27 03:42:56 │ … │              │        241.0 │            │         │
+│ fhv     │ 2020-12-27 03:51:15 │ 2020-12-27 04:01:59 │ … │              │        116.0 │            │         │
+│ fhv     │ 2020-12-27 03:02:48 │ 2020-12-27 03:27:57 │ … │              │         71.0 │            │         │
+│ fhv     │ 2020-12-27 03:28:43 │ 2020-12-27 03:33:00 │ … │              │        215.0 │            │         │
+│ fhv     │ 2020-12-27 03:41:49 │ 2020-12-27 03:47:35 │ … │              │        130.0 │            │         │
+│ fhv     │ 2020-12-27 03:28:38 │ 2020-12-27 03:35:31 │ … │              │        215.0 │            │         │
+│ fhv     │ 2020-12-27 03:52:43 │ 2020-12-27 04:04:40 │ … │              │         82.0 │            │         │
+│ fhv     │ 2020-12-27 03:04:26 │ 2020-12-27 03:10:38 │ … │              │        121.0 │            │         │
+│ fhv     │ 2020-12-27 03:39:28 │ 2020-12-27 03:45:50 │ … │              │        216.0 │            │         │
+│ fhv     │ 2020-12-27 03:10:04 │ 2020-12-27 03:14:34 │ … │              │        122.0 │            │         │
+│ fhv     │ 2020-12-27 03:03:03 │ 2020-12-27 03:20:02 │ … │              │        130.0 │            │         │
+│ fhv     │ 2020-12-27 03:34:29 │ 2020-12-27 03:56:00 │ … │              │        247.0 │            │         │
+│ fhv     │ 2020-12-27 03:46:41 │ 2020-12-27 03:52:28 │ … │              │        244.0 │            │         │
+│ fhv     │ 2020-12-27 03:49:04 │ 2020-12-27 04:02:29 │ … │              │        147.0 │            │         │
+│ fhv     │ 2020-12-27 03:19:27 │ 2020-12-27 03:28:59 │ … │              │         74.0 │            │         │
+│ fhv     │ 2020-12-27 03:03:20 │ 2020-12-27 03:47:39 │ … │              │          1.0 │            │         │
+│ fhv     │ 2020-12-27 03:30:33 │ 2020-12-27 03:45:14 │ … │              │          9.0 │            │         │
+│ fhv     │ 2020-12-27 03:57:43 │ 2020-12-27 04:05:29 │ … │              │         56.0 │            │         │
+│ fhv     │ 2020-07-26 10:16:36 │ 2020-07-26 10:21:40 │ … │              │        171.0 │            │         │
+│ fhv     │ 2020-07-26 13:04:24 │ 2020-07-26 13:16:56 │ … │              │        232.0 │            │         │
+│ fhv     │ 2020-07-27 07:54:06 │ 2020-07-27 08:20:53 │ … │              │         93.0 │            │         │
+│ fhv     │ 2020-07-27 08:46:08 │ 2020-07-27 09:04:56 │ … │              │         28.0 │            │         │
+│ fhv     │ 2020-07-27 10:51:16 │ 2020-07-27 11:03:02 │ … │              │         73.0 │            │         │
+│ fhv     │ 2020-07-27 11:06:51 │ 2020-07-27 11:08:37 │ … │              │         73.0 │            │         │
+│ fhv     │ 2020-07-27 11:29:16 │ 2020-07-27 11:59:09 │ … │              │         93.0 │            │         │
+│ fhv     │ 2020-07-27 12:15:59 │ 2020-07-27 12:16:06 │ … │              │         93.0 │            │         │
+│ fhv     │ 2020-07-28 08:35:26 │ 2020-07-28 09:11:25 │ … │              │        192.0 │            │         │
+│ fhv     │ 2020-07-28 10:35:40 │ 2020-07-28 10:43:15 │ … │              │        223.0 │            │         │
+│ fhv     │ 2020-07-28 11:27:04 │ 2020-07-28 11:37:52 │ … │              │        253.0 │            │         │
+│ fhv     │ 2020-01-07 11:12:03 │ 2020-01-07 11:29:33 │ … │              │         21.0 │            │         │
+│ fhv     │ 2020-01-07 11:08:42 │ 2020-01-07 11:20:43 │ … │              │        228.0 │            │         │
+│ fhv     │ 2020-01-07 11:48:49 │ 2020-01-07 11:55:49 │ … │              │         26.0 │            │         │
+│ fhv     │ 2020-01-07 11:09:42 │ 2020-01-07 11:20:28 │ … │              │        228.0 │            │         │
+│ fhv     │ 2020-01-07 11:49:01 │ 2020-01-07 11:54:07 │ … │              │        227.0 │            │         │
+│ fhv     │ 2020-01-07 11:14:36 │ 2020-01-07 11:19:41 │ … │              │         26.0 │            │         │
+│ fhv     │ 2020-01-07 11:00:00 │ 2020-01-07 11:17:33 │ … │              │              │            │         │
+│ fhv     │ 2020-01-07 11:30:00 │ 2020-01-07 11:50:00 │ … │              │              │            │         │
+│ fhv     │ 2020-01-07 11:00:00 │ 2020-01-07 11:30:00 │ … │              │              │            │         │
+│ fhv     │ 2020-01-07 11:03:07 │ 2020-01-07 11:28:34 │ … │              │        106.0 │            │         │
+│ fhv     │ 2020-01-07 11:59:18 │ 2020-01-07 12:03:00 │ … │              │         89.0 │            │         │
+│ fhv     │ 2020-01-07 11:57:53 │ 2020-01-07 12:03:57 │ … │              │         89.0 │            │         │
+│ fhv     │ 2020-01-07 12:45:00 │ 2020-01-07 12:51:00 │ … │              │              │            │         │
+│ fhv     │ 2020-01-07 12:26:00 │ 2020-01-07 13:00:00 │ … │              │              │            │         │
+│ fhv     │ 2020-01-07 12:40:00 │ 2020-01-07 14:17:00 │ … │              │              │            │         │
+│ fhv     │ 2020-01-07 12:25:00 │ 2020-01-07 12:40:00 │ … │              │              │            │         │
+│ fhv     │ 2020-01-07 12:25:00 │ 2020-01-07 12:35:00 │ … │              │              │            │         │
+│ fhv     │ 2020-01-07 12:26:00 │ 2020-01-07 12:35:00 │ … │              │              │            │         │
+│ fhv     │ 2020-01-07 12:39:00 │ 2020-01-07 12:44:00 │ … │              │              │            │         │
+│ fhv     │ 2020-01-07 12:35:09 │ 2020-01-07 12:58:16 │ … │              │         33.0 │            │         │
+├─────────┴─────────────────────┴─────────────────────┴───┴──────────────┴──────────────┴────────────┴─────────┤
+│ 15679790 rows (100 shown)                                                                9 columns (7 shown) │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+-- Q3 zones_with_less_than_100k_trips.sql
+.read ../nyc_transit/target/compiled/nyc_transit/analyses/zones_with_less_than_100k_trips.sql
+-- set temp_directory to avoid out of memory error
+
+-- Methodology: for each zone, count the number of trips when it is the origin and destination zone
+-- and sum the two to get the total number of trips
+
+WITH all_zone_trips AS (
+    SELECT
+        puzone AS zone,
+        SUM(trips) AS trips
+    FROM "main"."mart"."mart__fact_trips_by_borough"
+    GROUP BY ALL
+    UNION ALL
+    SELECT 
+        dozone AS zone,
+        SUM(trips) AS trips
+    FROM "main"."mart"."mart__fact_trips_by_borough"
+    GROUP BY ALL
+)
+
+SELECT 
+    zone,
+    SUM(trips) AS trips
+FROM all_zone_trips
+GROUP BY ALL
+HAVING trips < 100000
+┌───────────────────────────────────────────────┬────────┐
+│                     zone                      │ trips  │
+│                    varchar                    │ int128 │
+├───────────────────────────────────────────────┼────────┤
+│ Pelham Bay Park                               │  77580 │
+│ Inwood Hill Park                              │  89276 │
+│ City Island                                   │  76991 │
+│ Arden Heights                                 │  87820 │
+│ Breezy Point/Fort Tilden/Riis Beach           │  31520 │
+│ Newark Airport                                │  19301 │
+│ Highbridge Park                               │  36593 │
+│ Marine Park/Floyd Bennett Field               │  35007 │
+│ Astoria Park                                  │  13699 │
+│ Randalls Island                               │  46132 │
+│ Rossville/Woodrow                             │  75021 │
+│ Willets Point                                 │  22328 │
+│ Green-Wood Cemetery                           │  15292 │
+│ Crotona Park                                  │  58091 │
+│ Battery Park                                  │  49384 │
+│ Governor's Island/Ellis Island/Liberty Island │     90 │
+│ Jamaica Bay                                   │   1012 │
+│ Broad Channel                                 │  15717 │
+│ Rikers Island                                 │     84 │
+│ Freshkills Park                               │   7934 │
+│ Forest Park/Highland Park                     │  50841 │
+│ Great Kills Park                              │    600 │
+│ City Island                                   │  89226 │
+│ Forest Park/Highland Park                     │  90271 │
+│ Astoria Park                                  │  16467 │
+│ Highbridge Park                               │  68779 │
+│ Arden Heights                                 │  82146 │
+│ Rossville/Woodrow                             │  72446 │
+│ Breezy Point/Fort Tilden/Riis Beach           │  45544 │
+│ Jamaica Bay                                   │   1590 │
+│ Battery Park                                  │  65104 │
+│ Willets Point                                 │  24388 │
+│ Marine Park/Floyd Bennett Field               │  48021 │
+│ Green-Wood Cemetery                           │  25011 │
+│ Governor's Island/Ellis Island/Liberty Island │    299 │
+│ Freshkills Park                               │  10182 │
+│ Rikers Island                                 │     63 │
+│ Great Kills Park                              │    820 │
+│ Crotona Park                                  │  75928 │
+│ Broad Channel                                 │  17325 │
+├───────────────────────────────────────────────┴────────┤
+│ 40 rows                                      2 columns │
+└────────────────────────────────────────────────────────┘
+
+-- Q4 pivot_trips_by_borough.sql
+.read ../nyc_transit/target/compiled/nyc_transit/analyses/pivot_trips_by_borough.sql
+/** 
+Outout:
+
+Create pivot table with:
+index being pick up borough
+columns being drop off borough
+values being number of trips
+**/
+
+-- Implementation 1: duckdb native function
+-- PIVOT "main"."mart"."mart__fact_trips_by_borough" 
+-- ON doborough USING SUM(trips) -- column will be drop off borough 
+-- GROUP BY puborough -- rows will be pick up borough
+
+-- Implementation 2: dbt utils method
+SELECT
+      puborough,
+      
+  
+    sum(
+      
+      case
+      when doborough = 'Queens'
+        then trips
+      else 0
+      end
+    )
+    
+      
+            as "Queens"
+      
+    
+    ,
+  
+    sum(
+      
+      case
+      when doborough = 'Manhattan'
+        then trips
+      else 0
+      end
+    )
+    
+      
+            as "Manhattan"
+      
+    
+    ,
+  
+    sum(
+      
+      case
+      when doborough = 'Brooklyn'
+        then trips
+      else 0
+      end
+    )
+    
+      
+            as "Brooklyn"
+      
+    
+    ,
+  
+    sum(
+      
+      case
+      when doborough = 'Bronx'
+        then trips
+      else 0
+      end
+    )
+    
+      
+            as "Bronx"
+      
+    
+    ,
+  
+    sum(
+      
+      case
+      when doborough = 'Staten Island'
+        then trips
+      else 0
+      end
+    )
+    
+      
+            as "Staten Island"
+      
+    
+    ,
+  
+    sum(
+      
+      case
+      when doborough = 'Unknown'
+        then trips
+      else 0
+      end
+    )
+    
+      
+            as "Unknown"
+      
+    
+    ,
+  
+    sum(
+      
+      case
+      when doborough = 'EWR'
+        then trips
+      else 0
+      end
+    )
+    
+      
+            as "EWR"
+      
+    
+    ,
+  
+    sum(
+      
+      case
+      when doborough = 'None'
+        then trips
+      else 0
+      end
+    )
+    
+      
+            as "None"
+      
+    
+    
+  
+
+    from "main"."mart"."mart__fact_trips_by_borough" 
+    group by puborough
+┌───────────────┬──────────┬───────────┬──────────┬──────────┬───────────────┬─────────┬─────────┬────────┐
+│   puborough   │  Queens  │ Manhattan │ Brooklyn │  Bronx   │ Staten Island │ Unknown │   EWR   │  None  │
+│    varchar    │  int128  │  int128   │  int128  │  int128  │    int128     │ int128  │ int128  │ int128 │
+├───────────────┼──────────┼───────────┼──────────┼──────────┼───────────────┼─────────┼─────────┼────────┤
+│ Brooklyn      │  8178623 │  10657725 │ 71554324 │   802873 │        331592 │  920506 │  182316 │      0 │
+│ Manhattan     │ 10469888 │ 132698722 │ 11940125 │  8531131 │        164711 │ 4757534 │ 1123195 │      0 │
+│ Queens        │ 42890216 │   9654930 │  8019854 │  1542796 │         54583 │ 3236056 │   55444 │      0 │
+│ Bronx         │  1519173 │   8078354 │   767706 │ 35533709 │         20213 │ 2143679 │   27797 │      0 │
+│ Staten Island │    49421 │    121627 │   323356 │    19489 │       4402398 │   95404 │   45150 │      0 │
+│ EWR           │      877 │      8167 │     1722 │      133 │          1019 │    2730 │    4612 │      0 │
+│ Unknown       │  1129546 │   1194555 │  2186518 │  2738419 │         23620 │ 1947316 │   11916 │      0 │
+│               │  1989828 │   1723539 │  4380861 │  4559497 │         30799 │  365443 │   22627 │      0 │
+└───────────────┴──────────┴───────────┴──────────┴──────────┴───────────────┴─────────┴─────────┴────────┘
+
+-- Q5 yellow_taxi_fare_comparison.sql
+.read ../nyc_transit/target/compiled/nyc_transit/analyses/yellow_taxi_fare_comparison.sql
+-- set temp_directory to avoid out of memory error
+
+
+
+SELECT
+    dim_loc.borough, 
+    dim_loc.zone,
+    fare_amount,
+    AVG(fare_amount) OVER (PARTITION BY dim_loc.zone) AS zone_avg_fare_amount,
+    AVG(fare_amount) OVER (PARTITION BY dim_loc.borough) AS borough_avg_fare_amount,
+    AVG(fare_amount) OVER () AS overall_avg_fare_amount
+FROM "main"."main"."yellow_tripdata" yt
+LEFT JOIN "main"."mart"."mart__dim_locations" dim_loc ON yt.pulocationid = dim_loc.locationid
+┌──────────┬──────────────────────┬─────────────┬──────────────────────┬──────────────────────┬────────────────────────┐
+│ Borough  │         Zone         │ fare_amount │ zone_avg_fare_amount │ borough_avg_fare_a…  │ overall_avg_fare_amo…  │
+│ varchar  │       varchar        │   double    │        double        │        double        │         double         │
+├──────────┼──────────────────────┼─────────────┼──────────────────────┼──────────────────────┼────────────────────────┤
+│ EWR      │ Newark Airport       │       135.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │       109.5 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │        79.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │        80.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │       105.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │        79.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │        79.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │       120.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │        80.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │        80.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │       95.55 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │       106.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │        10.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │         2.5 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │        75.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │        90.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │       100.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │        74.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │        86.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │       150.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │        52.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │       -52.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │        1.25 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │        15.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │        80.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │        30.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │       110.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │        67.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │       100.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │       110.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │        52.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │        79.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │       125.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │         2.5 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │        80.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │        79.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │         2.5 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │       105.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │        79.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │        98.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │       105.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │       115.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │        80.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │         2.5 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │        78.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │        79.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │        90.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │        85.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │       100.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│ EWR      │ Newark Airport       │        79.0 │      78.132207057906 │      78.132207057906 │     13.141501256192425 │
+│  ·       │       ·              │          ·  │             ·        │             ·        │              ·         │
+│  ·       │       ·              │          ·  │             ·        │             ·        │              ·         │
+│  ·       │       ·              │          ·  │             ·        │             ·        │              ·         │
+│ Brooklyn │ Green-Wood Cemetery  │       26.26 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │       26.26 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │       26.37 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │       16.23 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │       23.36 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │        63.9 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │         2.5 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │        47.5 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │        25.0 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │        13.2 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │        30.0 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │        14.0 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │       30.02 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │       38.75 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │         5.0 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │         8.0 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │        10.5 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │         9.5 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │        36.0 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │        19.0 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │       36.99 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │       18.18 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │        20.0 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │       25.99 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │       34.11 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │       26.65 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │         7.0 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │       35.96 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │       41.12 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │        8.56 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │       54.36 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │       16.54 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │        18.5 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │       -10.5 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │       18.18 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │        10.0 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │         5.5 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │       20.78 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │        40.0 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │         4.0 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │        41.5 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │        10.5 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │      -37.96 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │       26.65 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │       30.02 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │        62.0 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Green-Wood Cemetery  │         9.5 │   22.039710144927533 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ East Flatbush/Rems…  │       18.45 │   29.014726664491853 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ East Flatbush/Rems…  │       20.87 │   29.014726664491853 │   24.343840609146724 │     13.141501256192425 │
+│ Brooklyn │ Ocean Hill           │       29.89 │   29.420144592831246 │   24.343840609146724 │     13.141501256192425 │
+├──────────┴──────────────────────┴─────────────┴──────────────────────┴──────────────────────┴────────────────────────┤
+│ 55553400 rows (100 shown)                                                                                  6 columns │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+-- Q6 dedupe.sql
+.read ../nyc_transit/target/compiled/nyc_transit/analyses/dedupe.sql
+/* 
+Methodology: use window functions for filtering duplicated columns
+1st, generate row number in each row in each partition in the descending order of insert_timestamp.
+So, the latest record in a parition will be assigned to row number 1 and so on.
+We just need to keep row_number = 1 to keep the latest record
+*/
+
+SELECT * FROM "main"."main"."events"
+QUALIFY row_number() OVER (PARTITION BY event_id ORDER BY insert_timestamp DESC) = 1
+┌──────────────────┬──────────┬────────────┬─────────┬──────────────────┐
+│ insert_timestamp │ event_id │ event_type │ user_id │ event_timestamp  │
+│     varchar      │ varchar  │  varchar   │  int32  │     varchar      │
+├──────────────────┼──────────┼────────────┼─────────┼──────────────────┤
+│ 23/07/2022 22:40 │ C        │ Land       │       5 │ 23/07/2022 22:48 │
+│ 23/07/2022 23:24 │ A        │ Click      │       1 │ 23/07/2022 22:15 │
+│ 23/07/2022 22:55 │ D        │ Click      │       5 │ 23/07/2022 23:34 │
+│ 24/07/2022 00:21 │ G        │ Buy        │       5 │ 24/07/2022 02:29 │
+│ 23/07/2022 23:52 │ E        │ Buy        │       1 │ 24/07/2022 00:26 │
+│ 24/07/2022 00:07 │ F        │ Click      │       5 │ 24/07/2022 01:23 │
+│ 23/07/2022 23:09 │ B        │ Buy        │       3 │ 23/07/2022 23:37 │
+└──────────────────┴──────────┴────────────┴─────────┴──────────────────┘
+
+-- Q7  seven_day_moving_average_prcp.sql
+.read ../nyc_transit/target/compiled/nyc_transit/analyses/seven_day_moving_average_prcp.sql
+SELECT 
+    station,
+    name,
+    date,
+    AVG(prcp) OVER (PARTITION BY station ORDER BY date 
+                    ROWS BETWEEN 3 PRECEDING AND 3 FOLLOWING) AS ma_7d -- calculate the 7 day moving average centre on current date
+FROM "main"."staging"."stg__central_park_weather"
+┌─────────────┬─────────────────────────────┬────────────┬──────────────────────┐
+│   STATION   │            NAME             │    date    │        ma_7d         │
+│   varchar   │           varchar           │    date    │        double        │
+├─────────────┼─────────────────────────────┼────────────┼──────────────────────┤
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-07-01 │               0.3625 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-07-02 │                 0.29 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-07-03 │  0.24166666666666667 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-07-04 │  0.20714285714285713 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-07-05 │  0.11857142857142856 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-07-06 │  0.13999999999999999 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-07-07 │   0.0642857142857143 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-07-08 │   0.0642857142857143 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-07-09 │  0.09999999999999999 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-07-10 │  0.10857142857142857 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-07-11 │  0.10857142857142857 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-07-12 │  0.07714285714285715 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-07-13 │  0.04428571428571428 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-07-14 │  0.04428571428571428 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-07-15 │  0.04428571428571428 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-07-16 │ 0.008571428571428572 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-07-17 │                  0.0 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-07-18 │                  0.0 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-07-19 │ 0.008571428571428572 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-07-20 │  0.05285714285714286 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-07-21 │  0.05285714285714286 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-07-22 │ 0.054285714285714284 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-07-23 │ 0.054285714285714284 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-07-24 │ 0.054285714285714284 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-07-25 │  0.08857142857142856 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-07-26 │  0.08142857142857143 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-07-27 │ 0.037142857142857144 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-07-28 │ 0.037142857142857144 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-07-29 │   0.1285714285714286 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-07-30 │   0.1285714285714286 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-07-31 │  0.13714285714285715 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-08-01 │  0.10285714285714286 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-08-02 │  0.10142857142857142 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-08-03 │  0.10142857142857142 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-08-04 │  0.10142857142857142 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-08-05 │  0.07428571428571429 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-08-06 │  0.08142857142857143 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-08-07 │  0.07285714285714286 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-08-08 │  0.07285714285714286 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-08-09 │                 0.08 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-08-10 │  0.20142857142857146 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-08-11 │  0.20142857142857146 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-08-12 │   0.1357142857142857 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-08-13 │   0.1285714285714286 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-08-14 │   0.1285714285714286 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-08-15 │   0.1285714285714286 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-08-16 │  0.12142857142857143 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-08-17 │                  0.0 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-08-18 │                  0.0 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2013-08-19 │  0.03571428571428571 │
+│      ·      │              ·              │     ·      │           ·          │
+│      ·      │              ·              │     ·      │           ·          │
+│      ·      │              ·              │     ·      │           ·          │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-07-13 │  0.24285714285714285 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-07-14 │   0.2928571428571428 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-07-15 │   0.2957142857142857 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-07-16 │  0.09428571428571429 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-07-17 │  0.09428571428571429 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-07-18 │  0.10142857142857144 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-07-19 │  0.10142857142857144 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-07-20 │  0.10285714285714287 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-07-21 │ 0.014285714285714285 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-07-22 │                 0.08 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-07-23 │                 0.19 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-07-24 │                 0.19 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-07-25 │  0.20285714285714285 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-07-26 │  0.26999999999999996 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-07-27 │  0.26857142857142857 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-07-28 │  0.26857142857142857 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-07-29 │  0.20428571428571432 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-07-30 │  0.09285714285714286 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-07-31 │  0.09285714285714286 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-08-01 │  0.07285714285714286 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-08-02 │ 0.005714285714285714 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-08-03 │ 0.005714285714285714 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-08-04 │ 0.005714285714285714 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-08-05 │                 0.03 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-08-06 │                 0.03 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-08-07 │  0.14857142857142858 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-08-08 │   0.1742857142857143 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-08-09 │   0.1742857142857143 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-08-10 │   0.1742857142857143 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-08-11 │   0.1742857142857143 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-08-12 │   0.1442857142857143 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-08-13 │   0.1442857142857143 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-08-14 │ 0.025714285714285714 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-08-15 │                  0.0 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-08-16 │ 0.028571428571428574 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-08-17 │ 0.028571428571428574 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-08-18 │   0.6642857142857144 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-08-19 │   1.0457142857142858 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-08-20 │   1.1985714285714286 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-08-21 │   1.1985714285714286 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-08-22 │   1.1985714285714286 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-08-23 │                 1.17 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-08-24 │   1.2657142857142856 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-08-25 │                 0.63 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-08-26 │   0.2485714285714286 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-08-27 │  0.09571428571428572 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-08-28 │  0.09571428571428572 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-08-29 │  0.11166666666666668 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-08-30 │                0.134 │
+│ USW00094728 │ NY CITY CENTRAL PARK, NY US │ 2021-08-31 │                  0.0 │
+├─────────────┴─────────────────────────────┴────────────┴──────────────────────┤
+│ 2984 rows (100 shown)                                               4 columns │
+└───────────────────────────────────────────────────────────────────────────────┘
+
+-- Q8 seven_day_moving_aggs_weather.sql
+.read ../nyc_transit/target/compiled/nyc_transit/analyses/seven_day_moving_aggs_weather.sql
+SELECT 
+    station,
+    name,
+    date,
+    min(prcp) OVER seven_days as prcpma_7d_min,
+    max(prcp) OVER seven_days as prcpma_7d_max,
+    avg(prcp) OVER seven_days as prcpma_7d_avg,
+    sum(prcp) OVER seven_days as prcpma_7d_sum,
+    min(snow) OVER seven_days as snow_ma_7d_min,
+    max(snow) OVER seven_days as snow_ma_7d_max,
+    avg(snow) OVER seven_days as snow_ma_7d_avg,
+    sum(snow) OVER seven_days as snow_ma_7d_sum
+FROM "main"."staging"."stg__central_park_weather"
+WINDOW seven_days AS (PARTITION BY station ORDER BY date ASC
+                    ROWS BETWEEN 3 PRECEDING AND 3 FOLLOWING) -- calculate the 7 day moving average centre on current date
+┌─────────────┬──────────────────────┬────────────┬───┬────────────────┬────────────────┬────────────────┐
+│   STATION   │         NAME         │    date    │ … │ snow_ma_7d_max │ snow_ma_7d_avg │ snow_ma_7d_sum │
+│   varchar   │       varchar        │    date    │   │     double     │     double     │     double     │
+├─────────────┼──────────────────────┼────────────┼───┼────────────────┼────────────────┼────────────────┤
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-07-01 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-07-02 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-07-03 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-07-04 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-07-05 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-07-06 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-07-07 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-07-08 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-07-09 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-07-10 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-07-11 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-07-12 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-07-13 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-07-14 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-07-15 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-07-16 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-07-17 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-07-18 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-07-19 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-07-20 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-07-21 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-07-22 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-07-23 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-07-24 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-07-25 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-07-26 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-07-27 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-07-28 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-07-29 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-07-30 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-07-31 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-08-01 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-08-02 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-08-03 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-08-04 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-08-05 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-08-06 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-08-07 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-08-08 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-08-09 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-08-10 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-08-11 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-08-12 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-08-13 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-08-14 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-08-15 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-08-16 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-08-17 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-08-18 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2013-08-19 │ … │            0.0 │            0.0 │            0.0 │
+│      ·      │          ·           │     ·      │ · │             ·  │             ·  │             ·  │
+│      ·      │          ·           │     ·      │ · │             ·  │             ·  │             ·  │
+│      ·      │          ·           │     ·      │ · │             ·  │             ·  │             ·  │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-07-13 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-07-14 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-07-15 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-07-16 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-07-17 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-07-18 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-07-19 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-07-20 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-07-21 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-07-22 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-07-23 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-07-24 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-07-25 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-07-26 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-07-27 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-07-28 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-07-29 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-07-30 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-07-31 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-08-01 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-08-02 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-08-03 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-08-04 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-08-05 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-08-06 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-08-07 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-08-08 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-08-09 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-08-10 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-08-11 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-08-12 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-08-13 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-08-14 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-08-15 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-08-16 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-08-17 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-08-18 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-08-19 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-08-20 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-08-21 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-08-22 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-08-23 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-08-24 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-08-25 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-08-26 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-08-27 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-08-28 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-08-29 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-08-30 │ … │            0.0 │            0.0 │            0.0 │
+│ USW00094728 │ NY CITY CENTRAL PA…  │ 2021-08-31 │ … │            0.0 │            0.0 │            0.0 │
+├─────────────┴──────────────────────┴────────────┴───┴────────────────┴────────────────┴────────────────┤
+│ 2984 rows (100 shown)                                                             11 columns (6 shown) │
+└────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+-- Q9 average_time_between_pickups.sql
+.read ../nyc_transit/target/compiled/nyc_transit/analyses/average_time_between_pickups.sql
+WITH time_difference AS (
+    SELECT
+        datediff('seconds', tt.pickup_datetime, lead(tt.pickup_datetime, 1,0) 
+            OVER (PARTITION BY dim_loc.zone ORDER BY tt.pickup_datetime ASC))
+            AS time_diff, -- calculate the difference between the pickup time of the current and next trip in the zone
+            dim_loc.zone AS zone
+    FROM "main"."mart"."mart__fact_all_taxi_trips" tt 
+    LEFT JOIN "main"."mart"."mart__dim_locations" dim_loc ON tt.pulocationid = dim_loc.locationid
+)
+
+SELECT 
+    zone,
+    AVG(time_diff) AS avg_time_between_pickups
+FROM time_difference 
+GROUP BY ALL
+
+-- Q10 days_before_precip_more_bike_trips.sql
+.read ../nyc_transit/target/compiled/nyc_transit/analyses/days_before_precip_more_bike_trips.sql
+-- set temp_directory to avoid out of memory error
+
+/*
+Methodology:
+1st, count number of bike trips by date using mart__fact_all_bike_trips
+2nd, inner join the above with stg__central_park_weather on date and station id
+3rd, classify the date using the following rules:
+    1. current prcp = 0 & tomorrow prcp > 0 => 'day_prior_to_prcp_or_snow'
+    2. current snow = 0 & tomorrow snow > 0 => 'day_prior_to_prcp_or_snow'
+    3. prcp > 0 or snow > 0 => 'prcp_or_snow_days'
+    4. otherwise, 'other_days'
+Finally, group by date_type calculate the average of bike trips
+*/
+

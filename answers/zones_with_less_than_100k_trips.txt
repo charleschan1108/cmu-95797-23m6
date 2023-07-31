@@ -1,0 +1,75 @@
+-- Q3 zones_with_less_than_100k_trips.sql
+.read ../nyc_transit/target/compiled/nyc_transit/analyses/zones_with_less_than_100k_trips.sql
+-- set temp_directory to avoid out of memory error
+
+-- Methodology: for each zone, count the number of trips when it is the origin and destination zone
+-- and sum the two to get the total number of trips
+
+WITH all_zone_trips AS (
+    SELECT
+        puzone AS zone,
+        SUM(trips) AS trips
+    FROM "main"."mart"."mart__fact_trips_by_borough"
+    GROUP BY ALL
+    UNION ALL
+    SELECT 
+        dozone AS zone,
+        SUM(trips) AS trips
+    FROM "main"."mart"."mart__fact_trips_by_borough"
+    GROUP BY ALL
+)
+
+SELECT 
+    zone,
+    SUM(trips) AS trips
+FROM all_zone_trips
+GROUP BY ALL
+HAVING trips < 100000
+┌───────────────────────────────────────────────┬────────┐
+│                     zone                      │ trips  │
+│                    varchar                    │ int128 │
+├───────────────────────────────────────────────┼────────┤
+│ Pelham Bay Park                               │  77580 │
+│ Inwood Hill Park                              │  89276 │
+│ City Island                                   │  76991 │
+│ Arden Heights                                 │  87820 │
+│ Breezy Point/Fort Tilden/Riis Beach           │  31520 │
+│ Newark Airport                                │  19301 │
+│ Highbridge Park                               │  36593 │
+│ Marine Park/Floyd Bennett Field               │  35007 │
+│ Astoria Park                                  │  13699 │
+│ Randalls Island                               │  46132 │
+│ Rossville/Woodrow                             │  75021 │
+│ Willets Point                                 │  22328 │
+│ Green-Wood Cemetery                           │  15292 │
+│ Crotona Park                                  │  58091 │
+│ Battery Park                                  │  49384 │
+│ Governor's Island/Ellis Island/Liberty Island │     90 │
+│ Jamaica Bay                                   │   1012 │
+│ Broad Channel                                 │  15717 │
+│ Rikers Island                                 │     84 │
+│ Freshkills Park                               │   7934 │
+│ Forest Park/Highland Park                     │  50841 │
+│ Great Kills Park                              │    600 │
+│ City Island                                   │  89226 │
+│ Forest Park/Highland Park                     │  90271 │
+│ Astoria Park                                  │  16467 │
+│ Highbridge Park                               │  68779 │
+│ Arden Heights                                 │  82146 │
+│ Rossville/Woodrow                             │  72446 │
+│ Breezy Point/Fort Tilden/Riis Beach           │  45544 │
+│ Jamaica Bay                                   │   1590 │
+│ Battery Park                                  │  65104 │
+│ Willets Point                                 │  24388 │
+│ Marine Park/Floyd Bennett Field               │  48021 │
+│ Green-Wood Cemetery                           │  25011 │
+│ Governor's Island/Ellis Island/Liberty Island │    299 │
+│ Freshkills Park                               │  10182 │
+│ Rikers Island                                 │     63 │
+│ Great Kills Park                              │    820 │
+│ Crotona Park                                  │  75928 │
+│ Broad Channel                                 │  17325 │
+├───────────────────────────────────────────────┴────────┤
+│ 40 rows                                      2 columns │
+└────────────────────────────────────────────────────────┘
+
